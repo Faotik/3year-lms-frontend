@@ -1,70 +1,164 @@
-# Getting Started with Create React App
+# Project Architecture
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Main Approach
 
-## Available Scripts
+We split the project into small folders so everything is easy to spot and navigate.
 
-In the project directory, you can run:
+```
+src/
+├── app/
+├── components/
+├── pages/
+├── hooks/
+├── context/
+├── services/
+├── utils/
+├── constants/
+├── styles/
+└── assets/
+└── index.js
+```
 
-### `npm start`
+**Do not touch `index.js`, this file will invocate and start all the app**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Responsibilities
 
-### `npm test`
+### `app/`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Main entry of the app. Here all pages and routing are mounted.
 
-### `npm run build`
+* `App.js` → app entry point
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### `components/`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Reusable, global UI pieces. Organised into three sub-folders:
 
-### `npm run eject`
+* `common/` → general-purpose pieces used anywhere (e.g. `LoadingSpinner`, `ErrorMessage`)
+* `layout/` → structural pieces (e.g. `Navbar`, `Sidebar`, `Footer`)
+* `ui/` → base visual elements (e.g. `Button`, `Input`, `Card`)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+**Defining rule**: if a piece of UI is used in more than one place → it belongs here.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### `pages/`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Full screens that the user sees in the browser.
 
-## Learn More
+Examples:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+* Home page
+* Login page
+* Module page
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Here goes the entire page that user will see in browser, not just a component
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### `hooks/`
 
-### Analyzing the Bundle Size
+Reusable React logic extracted into custom hook functions.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+A hook is a plain JS function that starts with `use`. It lets you share stateful logic across multiple components without copy-pasting.
 
-### Making a Progressive Web App
+Example — `useUser.js`:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```js
+// hooks/useUser.js
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
-### Advanced Configuration
+export function useUser() {
+  const { user } = useContext(AuthContext);
+  return {
+    user,
+    role: user?.role,           // "student" | "teacher" | "admin"
+    isStudent: user?.role === 'student',
+    isTeacher: user?.role === 'teacher',
+    isAdmin:   user?.role === 'admin',
+  };
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Any component can then just do:
 
-### Deployment
+```js
+import { useUser } from '../hooks/useUser';
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+const { isAdmin } = useUser();
+```
 
-### `npm run build` fails to minify
+**Rule of thumb**: if the same React logic (state, effects, context reads) appears in more than one component → extract it into a hook here.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+### `context/`
+
+Global data that needs to be shared across the whole app without prop-drilling.
+
+Examples:
+
+* `AuthContext` → stores the current `user` object and `setUser`
+* Role information derived from the user
+
+
+---
+
+### `services/`
+
+All future backend communication lives here. Currently empty / placeholders.
+
+Later:
+
+```js
+getCourses()
+login()
+getModuleById(id)
+```
+
+**Rule**: no component ever calls an API directly — it always goes through a service function.
+
+---
+
+### `utils/`
+
+Small, pure helper functions with no React dependency.
+
+Examples:
+
+* `formatDate(date)`
+* `validateEmail(email)`
+* `truncateText(text, maxLength)`
+
+---
+
+### `constants/`
+
+Fixed values shared across the app.
+
+Example:
+
+```js
+// constants/roles.js
+export const ROLES = {
+  STUDENT: 'student',
+  TEACHER: 'teacher',
+  ADMIN:   'admin',
+};
+```
+
+---
+
+### `styles/`
+
+Global CSS files (resets, variables, typography).
+
+---
+
+### `assets/`
+
+Static files: images, icons, fonts.
