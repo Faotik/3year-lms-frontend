@@ -1,24 +1,36 @@
-import logo from '../assets/logo.svg';
 import '../styles/App.css';
+import AdminPage from "../pages/adminPage";
+import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
+
+const theme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      main: "#3b82f6",
+    },
+    background: {
+      default: "#0b0b0b",
+      paper: "#151515",
+    },
+    text: {
+      primary: "#f5f5f5",
+      secondary: "#b8b8b8",
+    },
+  },
+  shape: {
+    borderRadius: 14,
+  },
+  typography: {
+    fontFamily: "'Inter', 'Roboto', 'Segoe UI', sans-serif",
+  },
+});
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AdminPage />
+    </ThemeProvider>
   );
 }
 
