@@ -35,10 +35,11 @@ function App() {
         <>
             <Routes>
                 {/* <Route path="/" element={<Home />} /> */}
-                {/* <Route path="/about" element={<Module />} /> */}
+                {/* <Route path="/about" element={<About />} /> */}
                 <Route path="/login" element={<Login />} />
                 {/* <Route path="/profile" element={<Profile />} /> */}
-                <Route path="/module/:id" element={<Module />} />
+                {/* <Route path="/modules" element={<Modules />} /> */}
+                <Route path="/modules/:id" element={<Module />} />
                 <Route path="/admin-dashboard" element=
                     {
                         <ThemeProvider theme={theme}>
