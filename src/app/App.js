@@ -2,6 +2,7 @@ import '../styles/App.css';
 import Login from '../pages/Login';
 import AdminDashboard from "../pages/AdminDashboard";
 import Module from "../pages/Module";
+import Home from "../pages/Home";
 import { Route, Routes } from 'react-router-dom';
 
 //document.documentElement.setAttribute("data-theme", "dark");
@@ -18,6 +19,7 @@ function App() {
                 <Route path="/modules/:id" element={<Module />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 {/* <Route path="*" element={<NotFound />} /> */}
+                <Route path="/" element={<Home />} />
             </Routes>
         </>
     );
