@@ -62,4 +62,35 @@
     border-radius: 3px;
     padding: 6px;
     border: none;
+    cursor: pointer;
+}
+
+.module-header {
+    margin-bottom: 16px;
+}
+
+.module-header h2 {
+    margin-bottom: 4px;
+}
+
+.module-header p {
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.card-deadline {
+    margin-top: 6px;
+    font-size: 12px;
+    opacity: 0.65;
+}
+
+.empty-note {
+    font-size: 13px;
+    opacity: 0.6;
+}
+
+.error-message {
+    color: var(--form-error);
+    font-size: 13px;
+    margin-bottom: 12px;
 }
