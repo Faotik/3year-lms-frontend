@@ -1,6 +1,8 @@
 import '../styles/App.css';
-import AdminPage from "../pages/adminPage";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
+//import Login from '../pages/Login';
+//import AdminDashboard from "../pages/AdminDashboard";
+import Module from "../pages/Module";
 
 const theme = createTheme({
   palette: {
@@ -25,12 +27,18 @@ const theme = createTheme({
   },
 });
 
+//document.documentElement.setAttribute("data-theme", "dark");
+
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <AdminPage />
-    </ThemeProvider>
+    // <ThemeProvider theme={theme}>
+    //   <CssBaseline />
+    //   <AdminPage />
+    // </ThemeProvider>
+
+    //<Login />
+
+    <Module />
   );
 }
 
