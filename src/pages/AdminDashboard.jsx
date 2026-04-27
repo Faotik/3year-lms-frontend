@@ -138,9 +138,25 @@ function AdminPage() {
                         mobileOpen={mobileSidebarOpen}
                         onMobileClose={() => setMobileSidebarOpen(false)}
                     />
-                    <Box sx={{ flexGrow: 1 }}>
+                    <Box
+                        sx={{
+                            flexGrow: 1,
+                            minWidth: 0,
+                            maxWidth: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                        }}
+                    >
                         <NavBar title={pageTitle} onOpenSidebar={() => setMobileSidebarOpen(true)} />
-                        <Box sx={{ p: { xs: 2, md: 3 } }}>
+                        <Box
+                            component="main"
+                            sx={{
+                                flex: 1,
+                                minWidth: 0,
+                                overflowX: "auto",
+                                p: { xs: 2, md: 3 },
+                            }}
+                        >
                             {activePage === "dashboard" ? (
                                 <Stack spacing={3}>
                                     <Grid container spacing={2}>
