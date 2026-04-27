@@ -17,23 +17,9 @@ const menuItems = [
 
 const drawerWidth = 240;
 
-function Sidebar({ activePage, onChangePage }) {
-    return (
-        <Drawer
-            variant="permanent"
-            sx={{
-                width: drawerWidth,
-                flexShrink: 0,
-                [`& .MuiDrawer-paper`]: {
-                    width: drawerWidth,
-                    boxSizing: "border-box",
-                    borderRight: "1px solid",
-                    borderColor: "divider",
-                    px: 1.5,
-                    py: 2
-                },
-            }}
-        >
+function Sidebar({ activePage, onChangePage, mobileOpen, onMobileClose }) {
+    const drawerContent = (
+        <>
             <Box sx={{ px: 1.5, py: 1, mb: 2 }}>
                 <Typography variant="h6" fontWeight={700}>
                     LearnLite Admin
@@ -54,7 +40,10 @@ function Sidebar({ activePage, onChangePage }) {
                     <ListItemButton
                         key={item.key}
                         selected={activePage === item.key}
-                        onClick={() => onChangePage(item.key)}
+                        onClick={() => {
+                            onChangePage(item.key);
+                            if (onMobileClose) onMobileClose();
+                        }}
                         sx={{
                             borderRadius: 3,
                             mb: 0.5,
@@ -66,7 +55,51 @@ function Sidebar({ activePage, onChangePage }) {
                     </ListItemButton>
                 ))}
             </List>
-        </Drawer>
+        </>
+    );
+
+    return (
+        <>
+            <Drawer
+                variant="temporary"
+                open={mobileOpen}
+                onClose={onMobileClose}
+                ModalProps={{ keepMounted: true }}
+                sx={{
+                    display: { xs: "block", md: "none" },
+                    [`& .MuiDrawer-paper`]: {
+                        width: drawerWidth,
+                        boxSizing: "border-box",
+                        borderRight: "1px solid",
+                        borderColor: "divider",
+                        px: 1.5,
+                        py: 2
+                    }
+                }}
+            >
+                {drawerContent}
+            </Drawer>
+
+            <Drawer
+                variant="permanent"
+                sx={{
+                    display: { xs: "none", md: "block" },
+                    width: drawerWidth,
+                    flexShrink: 0,
+                    [`& .MuiDrawer-paper`]: {
+                        width: drawerWidth,
+                        boxSizing: "border-box",
+                        borderRight: "1px solid",
+                        borderColor: "divider",
+                        px: 1.5,
+                        py: 2
+                    }
+                }}
+                open
+            >
+                {drawerContent}
+            </Drawer>
+        </>
     );
 }
 
