@@ -29,8 +29,7 @@
     margin-top: 10px;
 }
 
-.login-form input,
-button {
+.login-form input, .login-form button {
     width: 100%;
     margin-top: 6px;
     padding: 10px;
