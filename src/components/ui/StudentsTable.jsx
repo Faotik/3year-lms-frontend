@@ -16,7 +16,7 @@ function StudentsTable({ rows }) {
                         <TableCell>Student</TableCell>
                         <TableCell>Course</TableCell>
                         <TableCell>Role</TableCell>
-                        <TableCell>Progress</TableCell>
+                        <TableCell>ID</TableCell>
                     </TableRow>
                 </TableHead>
 
@@ -28,7 +28,7 @@ function StudentsTable({ rows }) {
                             <TableCell>
                                 <Chip size="small" label={row.role} />
                             </TableCell>
-                            <TableCell>{row.progress}%</TableCell>
+                            <TableCell>№{row.ID}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
