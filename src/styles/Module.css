@@ -1,0 +1,65 @@
+.page-container {
+    padding: 12px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.module-container {
+    max-width: 800px;
+    width: 100%;
+}
+
+.tabs {
+    display: flex;
+    gap: 6px;
+}
+
+.tab {
+    background: rgb(185, 185, 185);
+    border-radius: 10px 10px 0px 0px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.active {
+    background: rgb(136, 136, 136);
+}
+
+.list {
+    display: flex;
+    gap: 32px;
+    flex-direction: column;
+    padding: 32px;
+    border-top: 5px solid #373737;
+}
+
+.card {
+    background: rgb(245, 245, 245);
+    border-radius: 10px;
+    border: 3px solid #a4a4a4;
+    padding: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-desc {
+    flex-basis: 70%;
+}
+
+.card-score {
+    flex-basis: 30%;
+    display: flex;
+    justify-content: end;
+}
+
+.button-submition {
+    background: #27d756;
+    border-radius: 3px;
+    padding: 6px;
+    border: none;
+}
