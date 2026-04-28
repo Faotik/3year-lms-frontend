@@ -1,8 +1,12 @@
 import { AppBar, Avatar, Box, Button, IconButton, Stack, Toolbar, Typography } from "@mui/material";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import { Link as RouterLink } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../../app/App";
 
 function Navbar({ title, description, onOpenSidebar }) {
+    const { user, setUser } = useContext(UserContext);
+
     return (
         <AppBar
             position="sticky"
@@ -53,15 +57,29 @@ function Navbar({ title, description, onOpenSidebar }) {
                 </Box>
 
                 <Stack direction="row" spacing={1} sx={{ display: { xs: "none", md: "flex" } }}>
-                    <Button color="inherit" component={RouterLink} to="/">
-                        Dashboard
-                    </Button>
-                    <Button color="inherit" component={RouterLink} to="/modules">
-                        Modules
-                    </Button>
+                    {!user && (
+                        <Button color="inherit" component={RouterLink} to="/login">
+                            Login
+                        </Button>
+                    )}
+
+                    {user && (
+                        <>
+                            <Button color="inherit" component={RouterLink} to="/">
+                                Dashboard
+                            </Button>
+                            <Button color="inherit" component={RouterLink} to="/modules">
+                                Modules
+                            </Button>
+                        </>
+                    )}
+
+                    {user && user.role == "admin" && (
                         <Button color="inherit" component={RouterLink} to="/admin-panel">
                             Admin panel
                         </Button>
+                    )}
+
                 </Stack>
 
                 <Stack direction="row" spacing={{ xs: 0.5, sm: 1.5 }} alignItems="center" sx={{ flexShrink: 0 }}>

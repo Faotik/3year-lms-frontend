@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "../styles/Login.css";
 import { useNavigate } from "react-router-dom";
 import login from "../services/login";
+import { UserContext } from "../app/App";
+import getUser from "../services/getUser";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -11,6 +13,7 @@ export default function Login() {
     const [errorPassword, setErrorPassword] = useState("");
 
     const navigate = useNavigate();
+    const { _user, setUser } = useContext(UserContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -19,13 +22,22 @@ export default function Login() {
         setErrorPassword("");
 
         try {
-            const response = login(email, password);
+            const loginResponse = await login(email, password);
 
-            if (response.ok) {
-                navigate("/modules");
+            if (loginResponse.ok) {
+                const userResponse = await getUser();
+
+                if (userResponse.ok) {
+                    const data = await userResponse.json();
+
+                    setUser({ id: data.id, role: data.role });
+                    navigate("/modules");
+                }
+                else {
+                    setErrorPassword("Unable to connect to the server. Please try again later.");
+                }
             } else {
                 setErrorPassword("Incorrect login credentials.");
-                console.log("1");
             }
         } catch (e) {
             setErrorPassword("Unable to connect to the server. Please try again later.");
