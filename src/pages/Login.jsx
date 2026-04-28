@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../styles/Login.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -8,8 +9,35 @@ export default function Login() {
     const [errorEmail, setErrorEmail] = useState("");
     const [errorPassword, setErrorPassword] = useState("");
 
-    const handleSubmit = (e) => {
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        setErrorEmail("");
+        setErrorPassword("");
+
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+                credentials: "include",
+            });
+
+            console.log(response);
+
+            if (response.ok) {
+                navigate("/modules");
+            } else {
+                setErrorPassword("Incorrect login credentials.");
+                console.log("1");
+            }
+        } catch (e) {
+            setErrorPassword("Unable to connect to the server. Please try again later.");
+        }
     };
 
     return (
