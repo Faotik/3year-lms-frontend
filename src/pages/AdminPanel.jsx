@@ -10,9 +10,9 @@ import CalendarCard from "../components/ui/CalendarCard";
 import StudentsTable from "../components/ui/StudentsTable";
 import UserRegistrationForm from "../components/ui/UserRegistrationForm";
 
-function AdminPage() {
-    const themeMode = "dark";
-    // const themeMode = "light";
+function AdminPanel() {
+    //const themeMode = "dark";
+    const themeMode = "light";
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const [activePage, setActivePage] = useState("dashboard");
 
@@ -49,7 +49,7 @@ function AdminPage() {
         setActivePage("dashboard");
     };
 
-    const pageTitle = activePage === "dashboard" ? "Dashboard" : "Register users";
+    const pageTitle = activePage === "dashboard" ? "Admin panel" : "Register users";
 
     const adminTheme = useMemo(
         () =>
@@ -147,7 +147,7 @@ function AdminPage() {
                             flexDirection: "column",
                         }}
                     >
-                        <NavBar title={pageTitle} onOpenSidebar={() => setMobileSidebarOpen(true)} />
+                        <NavBar title={pageTitle} description={"Platform administration"} onOpenSidebar={() => setMobileSidebarOpen(true)} />
                         <Box
                             component="main"
                             sx={{
@@ -199,4 +199,4 @@ function AdminPage() {
     );
 }
 
-export default AdminPage
+export default AdminPanel
