@@ -15,8 +15,8 @@ export default function Module() {
         async function loadModule() {
             try {
                 const [modRes, assignRes] = await Promise.all([
-                    fetch(`/api/modules/${id}`, { credentials: "include" }),
-                    fetch(`/api/modules/${id}/assignments`, { credentials: "include" }),
+                    fetch(`http://localhost:5000/api/modules/${id}`, { credentials: "include" }),
+                    fetch(`http://localhost:5000/api/modules/${id}/assignments`, { credentials: "include" }),
                 ]);
 
                 if (!modRes.ok) {
