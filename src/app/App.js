@@ -15,7 +15,7 @@ function App() {
                 {/* <Route path="/about" element={<About />} /> */}
                 <Route path="/login" element={<Login />} />
                 {/* <Route path="/profile" element={<Profile />} /> */}
-                {/* <Route path="/modules" element={<Modules />} /> */}
+                {/* <Route path="/modules" element={<Modules />} />*/}
                 <Route path="/modules/:id" element={<Module />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 {/* <Route path="*" element={<NotFound />} /> */}
