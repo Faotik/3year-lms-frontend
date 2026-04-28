@@ -1,11 +1,13 @@
 import { AppBar, Avatar, Box, Button, IconButton, Stack, Toolbar, Typography } from "@mui/material";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../app/App";
+import logout from "../../services/logout";
 
 function Navbar({ title, description, onOpenSidebar }) {
     const { user, setUser } = useContext(UserContext);
+    const navigate = useNavigate();
 
     return (
         <AppBar
@@ -71,6 +73,13 @@ function Navbar({ title, description, onOpenSidebar }) {
                             <Button color="inherit" component={RouterLink} to="/modules">
                                 Modules
                             </Button>
+                            <Button color="inherit" onClick={async () => {
+                                await logout();
+                                setUser(null);
+                                navigate("/");
+                            }}>
+                                Logout
+                            </Button>
                         </>
                     )}
 
@@ -86,7 +95,7 @@ function Navbar({ title, description, onOpenSidebar }) {
                     <Avatar sx={{ bgcolor: "primary.main", width: { xs: 32, sm: 34 }, height: { xs: 32, sm: 34 } }} />
                 </Stack>
             </Toolbar>
-        </AppBar>
+        </AppBar >
     );
 }
 

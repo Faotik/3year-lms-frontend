@@ -31,7 +31,7 @@ export default function Login() {
                     const data = await userResponse.json();
 
                     setUser({ id: data.id, role: data.role });
-                    navigate("/modules");
+                    navigate("/");
                 }
                 else {
                     setErrorPassword("Unable to connect to the server. Please try again later.");
