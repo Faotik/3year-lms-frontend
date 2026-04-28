@@ -23,7 +23,8 @@
 .tab {
     background: rgb(246, 158, 35);
     border-radius: 10px 10px 0px 0px;
-    border: 1px solid #ccc;
+    border: solid #ccc;
+    border-width: 2px 2px 0px 2px;
     padding: 10px;
     cursor: pointer;
 }
@@ -61,10 +62,68 @@
     justify-content: end;
 }
 
-.button-submition {
-    background: #27d756;
-    border-radius: 3px;
-    padding: 12px;
-    border: none;
+.button {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    padding: 10px 20px;
+    border-radius: 6px;
     cursor: pointer;
+}
+
+.button-submition {
+    background-color: #007bff;
+    color: var(--text-color-alternative);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #e9e9e9;
+}
+
+.button-submition:hover {
+    background-color: #0056b3;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    background: white;
+    padding: 32px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content textarea {
+    width: 100%;
+    height: 150px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    resize: vertical;
+    font-family: inherit;
+    margin-top: 16px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
 }

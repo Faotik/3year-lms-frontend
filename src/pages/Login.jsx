@@ -45,6 +45,7 @@ export default function Login() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="Enter your email"
+                            required
                         />
                     </label>
                     {errorEmail && <p className="error-message">{errorEmail}</p>}
@@ -57,6 +58,7 @@ export default function Login() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter your password"
+                            required
                         />
                     </label>
                     {errorPassword && <p className="error-message">{errorPassword}</p>}
