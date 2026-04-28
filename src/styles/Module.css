@@ -21,7 +21,7 @@
 }
 
 .tab {
-    background: rgb(185, 185, 185);
+    background: rgb(246, 158, 35);
     border-radius: 10px 10px 0px 0px;
     border: 1px solid #ccc;
     padding: 10px;
@@ -29,7 +29,7 @@
 }
 
 .active {
-    background: rgb(136, 136, 136);
+    background: rgb(184, 126, 33)
 }
 
 .list {
