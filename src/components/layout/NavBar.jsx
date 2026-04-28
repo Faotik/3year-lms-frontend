@@ -53,7 +53,7 @@ function Navbar({ title, description, onOpenSidebar }) {
                 </Box>
 
                 <Stack direction="row" spacing={1} sx={{ display: { xs: "none", md: "flex" } }}>
-                    <Button color="inherit" component={RouterLink} to="/dashboard">
+                    <Button color="inherit" component={RouterLink} to="/">
                         Dashboard
                     </Button>
                     <Button color="inherit" component={RouterLink} to="/modules">
