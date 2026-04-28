@@ -8,7 +8,7 @@ export default function Module() {
 
     return (
         <>
-            <NavBar />
+            <NavBar title="Modules" />
             <div className="page-container">
                 <div className="module-container">
                     <div className="tabs">

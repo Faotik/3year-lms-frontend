@@ -1,7 +1,8 @@
-import { AppBar, Avatar, Box, IconButton, Stack, Toolbar, Typography } from "@mui/material";
+import { AppBar, Avatar, Box, Button, IconButton, Stack, Toolbar, Typography } from "@mui/material";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import { Link as RouterLink } from "react-router-dom";
 
-function Navbar({ title, onOpenSidebar }) {
+function Navbar({ title, description, onOpenSidebar }) {
     return (
         <AppBar
             position="sticky"
@@ -45,10 +46,23 @@ function Navbar({ title, onOpenSidebar }) {
                         color="text.secondary"
                         noWrap
                         sx={{ display: { xs: "none", sm: "block" } }}
+                        description={description}
                     >
-                        Friendly learning system administration
+                        {description}
                     </Typography>
                 </Box>
+
+                <Stack direction="row" spacing={1} sx={{ display: { xs: "none", md: "flex" } }}>
+                    <Button color="inherit" component={RouterLink} to="/dashboard">
+                        Dashboard
+                    </Button>
+                    <Button color="inherit" component={RouterLink} to="/modules">
+                        Modules
+                    </Button>
+                        <Button color="inherit" component={RouterLink} to="/admin-panel">
+                            Admin panel
+                        </Button>
+                </Stack>
 
                 <Stack direction="row" spacing={{ xs: 0.5, sm: 1.5 }} alignItems="center" sx={{ flexShrink: 0 }}>
                     <Avatar sx={{ bgcolor: "primary.main", width: { xs: 32, sm: 34 }, height: { xs: 32, sm: 34 } }} />
