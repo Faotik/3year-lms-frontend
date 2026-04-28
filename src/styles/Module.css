@@ -9,11 +9,15 @@
 .module-container {
     max-width: 800px;
     width: 100%;
+    background: white;
+    min-height: calc(100vh - 64px);
+    border-radius: 10px 10px 0px 0px;
 }
 
 .tabs {
     display: flex;
     gap: 6px;
+    background: var(--background);
 }
 
 .tab {
@@ -60,6 +64,7 @@
 .button-submition {
     background: #27d756;
     border-radius: 3px;
-    padding: 6px;
+    padding: 12px;
     border: none;
+    cursor: pointer;
 }

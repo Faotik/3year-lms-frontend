@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../styles/Login.css";
 import { useNavigate } from "react-router-dom";
+import login from "../services/login";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -18,16 +19,7 @@ export default function Login() {
         setErrorPassword("");
 
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-                credentials: "include",
-            });
-
-            console.log(response);
+            const response = login(email, password);
 
             if (response.ok) {
                 navigate("/modules");
