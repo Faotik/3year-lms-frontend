@@ -1,13 +1,14 @@
 import { AppBar, Avatar, Box, Button, IconButton, Stack, Toolbar, Typography } from "@mui/material";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../app/App";
 import logout from "../../services/logout";
 
 function Navbar({ title, description, onOpenSidebar }) {
-    const { user, setUser } = useContext(UserContext);
     const navigate = useNavigate();
+
+    const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")));
 
     return (
         <AppBar
@@ -65,6 +66,12 @@ function Navbar({ title, description, onOpenSidebar }) {
                         </Button>
                     )}
 
+                    {user && user.role == "admin" && (
+                        <Button color="inherit" component={RouterLink} to="/admin-panel">
+                            Admin panel
+                        </Button>
+                    )}
+
                     {user && (
                         <>
                             <Button color="inherit" component={RouterLink} to="/">
@@ -76,17 +83,12 @@ function Navbar({ title, description, onOpenSidebar }) {
                             <Button color="inherit" onClick={async () => {
                                 await logout();
                                 setUser(null);
+                                localStorage.setItem("user", JSON.stringify(null));
                                 navigate("/");
                             }}>
                                 Logout
                             </Button>
                         </>
-                    )}
-
-                    {user && user.role == "admin" && (
-                        <Button color="inherit" component={RouterLink} to="/admin-panel">
-                            Admin panel
-                        </Button>
                     )}
 
                 </Stack>

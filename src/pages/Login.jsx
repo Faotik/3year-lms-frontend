@@ -13,7 +13,6 @@ export default function Login() {
     const [errorPassword, setErrorPassword] = useState("");
 
     const navigate = useNavigate();
-    const { _user, setUser } = useContext(UserContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,7 +29,7 @@ export default function Login() {
                 if (userResponse.ok) {
                     const data = await userResponse.json();
 
-                    setUser({ id: data.id, role: data.role });
+                    localStorage.setItem("user", JSON.stringify({ id: data.id, role: data.role }));
                     navigate("/");
                 }
                 else {
