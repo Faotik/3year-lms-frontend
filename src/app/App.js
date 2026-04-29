@@ -7,6 +7,7 @@ import { Route, Routes } from 'react-router-dom';
 import Modules from '../pages/Modules';
 import { createContext, useState } from 'react';
 import Submitions from '../pages/Submitions';
+import Test from '../pages/Test';
 
 //document.documentElement.setAttribute("data-theme", "dark");
 
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/modules/:id" element={<Module />} />
                 <Route path="/admin-panel" element={<AdminPanel />} />
                 <Route path="/modules/assignments/:id/submitions" element={<Submitions />} />
+                <Route path="/modules/tests/:id" element={<Test />} />
                 {/* <Route path="*" element={<NotFound />} /> */}
                 <Route path="/" element={<Dashboard />} />
             </Routes>

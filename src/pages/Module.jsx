@@ -9,6 +9,8 @@ import submitAssignment from "../services/submitAssignment";
 import updateAssignment from "../services/updateAssignment";
 import addAssignment from "../services/addAssignment";
 import deleteAssignment from "../services/deleteAssignment";
+import getTests from "../services/getTests";
+import getTestSubmission from "../services/getTestSubmission";
 
 export default function Module() {
 
@@ -18,10 +20,13 @@ export default function Module() {
     const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")));
 
     useEffect(() => {
-        updateAssignments(user);
+        fetchAssignments();
+        fetchTests();
     }, []);
 
     const [assignments, setAssignments] = useState([]);
+    const [tests, setTests] = useState([]);
+
     const [error, setError] = useState("");
     const [selectedAssignment, setSelectedAssignment] = useState("");
     const [activeTab, setActiveTab] = useState("assignments");
@@ -35,7 +40,7 @@ export default function Module() {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [createData, setCreateData] = useState({ title: "", description: "", deadline: "" });
 
-    const updateAssignments = async () => {
+    const fetchAssignments = async () => {
         const response = await getAssignments(id);
 
         if (response.ok) {
@@ -60,6 +65,29 @@ export default function Module() {
         }
     };
 
+    const fetchTests = async () => {
+        const response = await getTests(id);
+
+        if (response.ok) {
+            const data = await response.json();
+            if (user && user.role === 'student') {
+                for (let i = 0; i < data.length; i++) {
+                    const responseSubmission = await getTestSubmission(data[i]._id);
+                    if (responseSubmission.ok) {
+                        const dataSubmission = await responseSubmission.json();
+                        data[i] = { ...data[i], submissions: dataSubmission };
+                    }
+                }
+
+            }
+
+            console.log(data);
+
+            data.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+            setTests(data);
+        }
+    };
+
     const handleOpenSubmission = (id) => {
         setSelectedAssignment(id);
         setSubmissionText("");
@@ -74,7 +102,7 @@ export default function Module() {
         e.preventDefault();
         console.log(e.target.value);
         await submitAssignment(selectedAssignment, submissionText);
-        await updateAssignments();
+        await fetchAssignments();
 
         handleCloseSubmission();
     };
@@ -99,7 +127,7 @@ export default function Module() {
     const handleEditSubmit = async (e) => {
         e.preventDefault();
         await updateAssignment(selectedAssignment, editData);
-        await updateAssignments();
+        await fetchAssignments();
         handleCloseEdit();
     };
 
@@ -115,14 +143,22 @@ export default function Module() {
     const handleCreateSubmit = async (e) => {
         e.preventDefault();
         await addAssignment({ ...createData, moduleId: id });
-        await updateAssignments();
+        await fetchAssignments();
         handleCloseCreate();
     };
 
     const handleDeleteAssignment = async (id) => {
         await deleteAssignment(id);
-        await updateAssignments();
+        await fetchAssignments();
     };
+
+    const getScore = (submissions) => {
+        for (let submission of submissions) {
+            if (submission.studentId === user.id) {
+                return `${submission.score} / ${submission.maxScore}`;
+            }
+        }
+    }
 
     return (
         <>
@@ -207,17 +243,26 @@ export default function Module() {
                             </button>
                         )}
 
-                        {activeTab === "tests" && (
-                            <>
-                                <div className="card">
-                                    <div className="card-desc">
-                                        <h3>Test Title</h3>
-                                        <p>Test description...</p>
-                                    </div>
-                                    <div className="card-score">Score: 85</div>
+                        {activeTab === "tests" && tests.map((test) => (
+                            <div className="card" key={test._id}>
+                                <div className="card-desc">
+                                    <h3>{test.title}</h3>
+                                    <p>{test.description}</p>
+                                    <p>Due: {new Date(test.deadline).toLocaleDateString()}</p>
                                 </div>
-                            </>
-                        )}
+                                {test.submissions.length > 0 && user.role == "student" && (
+                                    <div className="card-score">{getScore(test.submissions)}</div>
+                                )}
+                                {test.submissions.length === 0 && user.role == "student" && (
+                                    <button
+                                        className="button-submition"
+                                        onClick={() => navigate(`/modules/tests/${test._id}`)}
+                                    >
+                                        Start Test
+                                    </button>
+                                )}
+                            </div>
+                        ))}
                     </div>
                 </div>
 

@@ -147,3 +147,35 @@
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
+.test-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.test-question-card {
+    margin-bottom: 25px;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.option-label {
+    display: flex;
+    margin: 10px 0;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.option-label:hover {
+    background-color: #f0f7ff;
+}
+
+.option-label input {
+    margin-right: 10px;
+}
