@@ -3,14 +3,19 @@ import NavBar from "../components/layout/NavBar";
 import "../styles/Modules.css";
 import { useNavigate } from "react-router-dom";
 import getModules from "../services/getModules";
+import checkAuth from "../services/checkAuth";
 
 export default function Modules() {
-
     const navigate = useNavigate();
+
     const [modules, setModules] = useState([]);
     const [error, setError] = useState("");
 
     useEffect(() => {
+        if (!checkAuth()) {
+            navigate("/login");
+        }
+
         const func = async () => {
             const response = await getModules();
 

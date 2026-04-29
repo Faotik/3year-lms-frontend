@@ -1,7 +1,7 @@
 import { Box, createTheme, CssBaseline, Grid, Stack, ThemeProvider, Typography } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import NavBar from "../components/layout/NavBar";
 import Sidebar from "../components/layout/Sidebar";
 import StatCard from "../components/ui/StatCard";
@@ -9,9 +9,19 @@ import ChartCard from "../components/ui/ChartCard";
 import CalendarCard from "../components/ui/CalendarCard";
 import StudentsTable from "../components/ui/StudentsTable";
 import UserRegistrationForm from "../components/ui/UserRegistrationForm";
+import checkAuth from "../services/checkAuth";
+import { useNavigate } from "react-router-dom";
 
 function AdminPanel() {
-    //const themeMode = "dark";
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!checkAuth(["admin"])) {
+            navigate("/login");
+        }
+    }, []);
+
+    //const themeMode = "dark"; 
     const themeMode = "light";
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const [activePage, setActivePage] = useState("dashboard");
@@ -66,23 +76,23 @@ function AdminPanel() {
                     background:
                         themeMode === "dark"
                             ? {
-                                  default: "#0b0b0b",
-                                  paper: "#151515"
-                              }
+                                default: "#0b0b0b",
+                                paper: "#151515"
+                            }
                             : {
-                                  default: "#f3f7ff",
-                                  paper: "#ffffff"
-                              },
+                                default: "#f3f7ff",
+                                paper: "#ffffff"
+                            },
                     text:
                         themeMode === "dark"
                             ? {
-                                  primary: "#f5f5f5",
-                                  secondary: "#b8b8b8"
-                              }
+                                primary: "#f5f5f5",
+                                secondary: "#b8b8b8"
+                            }
                             : {
-                                  primary: "#101828",
-                                  secondary: "#475467"
-                              }
+                                primary: "#101828",
+                                secondary: "#475467"
+                            }
                 },
                 shape: {
                     borderRadius: 14

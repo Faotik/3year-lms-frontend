@@ -11,15 +11,20 @@ import addAssignment from "../services/addAssignment";
 import deleteAssignment from "../services/deleteAssignment";
 import getTests from "../services/getTests";
 import getTestSubmission from "../services/getTestSubmission";
+import checkAuth from "../services/checkAuth";
 
 export default function Module() {
+    const navigate = useNavigate();
 
     const { id } = useParams();
-    const navigate = useNavigate();
 
     const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")));
 
     useEffect(() => {
+        if (!checkAuth()) {
+            navigate("/login");
+        }
+
         fetchAssignments();
         fetchTests();
     }, []);

@@ -3,12 +3,19 @@ import NavBar from "../components/layout/NavBar";
 import "../styles/Module.css";
 import { useNavigate, useParams } from "react-router-dom";
 import getSubmission from "../services/getSubmission";
+import checkAuth from "../services/checkAuth";
 
 export default function Submitions() {
+    const navigate = useNavigate();
+
     const { id } = useParams();
     const [submitions, setSubmitions] = useState([]);
 
     useEffect(() => {
+        if (!checkAuth()) {
+            navigate("/login");
+        }
+
         fetchSubmitions();
     }, []);
 

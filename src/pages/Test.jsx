@@ -2,15 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import getTest from "../services/getTest";
 import submitTest from "../services/submitTest";
+import checkAuth from "../services/checkAuth";
 
 export default function Test() {
-    const { id } = useParams();
     const navigate = useNavigate();
+
+    const { id } = useParams();
 
     const [test, setTest] = useState(null);
     const [answers, setAnswers] = useState({});
 
     useEffect(() => {
+        if (!checkAuth()) {
+            navigate("/login");
+        }
+
         const func = async () => {
             const res = await getTest(id);
             if (res.ok) setTest(await res.json());
