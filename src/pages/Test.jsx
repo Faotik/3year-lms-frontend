@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import "../styles/Test.css";
 import getTest from "../services/getTest";
 import submitTest from "../services/submitTest";
 import checkAuth from "../services/checkAuth";

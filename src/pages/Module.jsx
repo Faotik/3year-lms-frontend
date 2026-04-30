@@ -4,7 +4,6 @@ import "../styles/Module.css";
 import { useNavigate, useParams } from "react-router-dom";
 import getAssignments from "../services/getAssignments";
 import getSubmission from "../services/getSubmission";
-import { UserContext } from "../app/App";
 import submitAssignment from "../services/submitAssignment";
 import updateAssignment from "../services/updateAssignment";
 import addAssignment from "../services/addAssignment";
