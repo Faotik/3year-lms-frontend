@@ -75,7 +75,7 @@ export default function Module() {
 
         if (response.ok) {
             const data = await response.json();
-            if (user && user.role === 'student') {
+            if (user) {
                 for (let i = 0; i < data.length; i++) {
                     const responseSubmission = await getTestSubmission(data[i]._id);
                     if (responseSubmission.ok) {
@@ -196,10 +196,10 @@ export default function Module() {
                                         <strong>Due:</strong> {new Date(assignment.deadline).toLocaleDateString()}
                                     </p>
                                 </div>
-                                {assignment.submission && user.role == "student" && (
+                                {assignment.submission && user.role === "student" && (
                                     <div className="card-score">Already submitted</div>
                                 )}
-                                {!assignment.submission && user.role == "student" && (
+                                {!assignment.submission && user.role === "student" && (
                                     <button
                                         type="button"
                                         className="button-submition"
@@ -208,7 +208,7 @@ export default function Module() {
                                         Add submission
                                     </button>
                                 )}
-                                {user.role == "teacher" && (
+                                {user.role !== "student" && (
                                     <button
                                         type="button"
                                         className="button-submition"
@@ -217,7 +217,7 @@ export default function Module() {
                                         Edit
                                     </button>
                                 )}
-                                {user.role == "teacher" && (
+                                {user.role !== "student" && (
                                     <button
                                         type="button"
                                         className="button-submition"
@@ -226,7 +226,7 @@ export default function Module() {
                                         Delete
                                     </button>
                                 )}
-                                {user.role == "teacher" && (
+                                {user.role !== "student" && (
                                     <button
                                         type="button"
                                         className="button-submition"
@@ -242,7 +242,7 @@ export default function Module() {
                             <p>No assignments found for this module.</p>
                         )}
 
-                        {activeTab === "assignments" && user.role === "teacher" && (
+                        {activeTab === "assignments" && user.role !== "student" && (
                             <button className="button-submition" onClick={handleOpenCreate}>
                                 + Add New Assignment
                             </button>
@@ -255,10 +255,10 @@ export default function Module() {
                                     <p>{test.description}</p>
                                     <p>Due: {new Date(test.deadline).toLocaleDateString()}</p>
                                 </div>
-                                {test.submissions.length > 0 && user.role == "student" && (
+                                {test.submissions.length > 0 && user.role === "student" && (
                                     <div className="card-score">{getScore(test.submissions)}</div>
                                 )}
-                                {test.submissions.length === 0 && user.role == "student" && (
+                                {test.submissions.length === 0 && user.role === "student" && (
                                     <button
                                         className="button-submition"
                                         onClick={() => navigate(`/modules/tests/${test._id}`)}
@@ -300,8 +300,8 @@ export default function Module() {
                         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                             <h2>Edit Assignment</h2>
                             <form onSubmit={handleEditSubmit} className="edit-form">
-                                <div className="input-group">
-                                    <label>Assignment Title</label>
+                                <div className="edit-form-input">
+                                    <label>Title</label>
                                     <input
                                         type="text"
                                         value={editData.title}
@@ -310,7 +310,7 @@ export default function Module() {
                                     />
                                 </div>
 
-                                <div className="input-group">
+                                <div className="edit-form-input">
                                     <label>Description</label>
                                     <textarea
                                         value={editData.description}
@@ -318,7 +318,7 @@ export default function Module() {
                                     />
                                 </div>
 
-                                <div className="input-group">
+                                <div className="edit-form-input">
                                     <label>Deadline</label>
                                     <input
                                         type="date"
@@ -346,7 +346,7 @@ export default function Module() {
                         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                             <h2>Create New Assignment</h2>
                             <form onSubmit={handleCreateSubmit} className="edit-form">
-                                <div className="input-group">
+                                <div className="edit-form-input">
                                     <label>Title</label>
                                     <input
                                         type="text"
@@ -355,14 +355,14 @@ export default function Module() {
                                         required
                                     />
                                 </div>
-                                <div className="input-group">
+                                <div className="edit-form-input">
                                     <label>Description</label>
                                     <textarea
                                         value={createData.description}
                                         onChange={(e) => setCreateData({ ...createData, description: e.target.value })}
                                     />
                                 </div>
-                                <div className="input-group">
+                                <div className="edit-form-input">
                                     <label>Deadline</label>
                                     <input
                                         type="date"
