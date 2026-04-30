@@ -11,6 +11,12 @@ import deleteAssignment from "../services/deleteAssignment";
 import getTests from "../services/getTests";
 import getTestSubmission from "../services/getTestSubmission";
 import checkAuth from "../services/checkAuth";
+import addTest from "../services/addTest";
+import updateTest from "../services/updateTest";
+import deleteTest from "../services/deleteTest";
+import TestCreationForm from "../components/ui/TestCreationForm";
+import TestEditForm from "../components/ui/TestEditForm";
+import TestDeleteForm from "../components/ui/TestDeleteForm";
 
 export default function Module() {
     const navigate = useNavigate();
@@ -43,6 +49,11 @@ export default function Module() {
 
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [createData, setCreateData] = useState({ title: "", description: "", deadline: "" });
+
+    const [isCreateTestOpen, setIsCreateTestOpen] = useState(false);
+    const [isEditTestOpen, setIsEditTestOpen] = useState(false);
+    const [isDeleteTestOpen, setIsDeleteTestOpen] = useState(false);
+    const [selectedTestIdForForm, setSelectedTestIdForForm] = useState("");
 
     const fetchAssignments = async () => {
         const response = await getAssignments(id);
@@ -156,6 +167,36 @@ export default function Module() {
         await fetchAssignments();
     };
 
+    const handleOpenCreateTest = () => setIsCreateTestOpen(true);
+    const handleCloseCreateTest = () => setIsCreateTestOpen(false);
+    const handleCreateTestSubmit = async (payload) => {
+        await addTest(payload);
+        await fetchTests();
+        handleCloseCreateTest();
+    };
+
+    const handleOpenEditTest = (testId) => {
+        setSelectedTestIdForForm(testId);
+        setIsEditTestOpen(true);
+    };
+    const handleCloseEditTest = () => setIsEditTestOpen(false);
+    const handleEditTestSubmit = async (payload) => {
+        await updateTest(payload);
+        await fetchTests();
+        handleCloseEditTest();
+    };
+
+    const handleOpenDeleteTest = (testId) => {
+        setSelectedTestIdForForm(testId);
+        setIsDeleteTestOpen(true);
+    };
+    const handleCloseDeleteTest = () => setIsDeleteTestOpen(false);
+    const handleDeleteTestConfirm = async (testId) => {
+        await deleteTest(testId);
+        await fetchTests();
+        handleCloseDeleteTest();
+    };
+
     const getScore = (submissions) => {
         for (let submission of submissions) {
             if (submission.studentId === user.id) {
@@ -265,8 +306,45 @@ export default function Module() {
                                         Start Test
                                     </button>
                                 )}
+                                {user.role !== "student" && (
+                                    <button
+                                        type="button"
+                                        className="button-submition"
+                                        onClick={() => handleOpenEditTest(test._id)}
+                                    >
+                                        Edit
+                                    </button>
+                                )}
+                                {user.role !== "student" && (
+                                    <button
+                                        type="button"
+                                        className="button-submition"
+                                        onClick={() => handleOpenDeleteTest(test._id)}
+                                    >
+                                        Delete
+                                    </button>
+                                )}
+                                {user.role !== "student" && (
+                                    <button
+                                        type="button"
+                                        className="button-submition"
+                                        onClick={() => navigate(`/modules/tests/${test._id}/submitions`)}
+                                    >
+                                        View
+                                    </button>
+                                )}
                             </div>
                         ))}
+
+                        {activeTab === "tests" && tests.length === 0 && (
+                            <p>No tests found for this module.</p>
+                        )}
+
+                        {activeTab === "tests" && user.role !== "student" && (
+                            <button className="button-submition" onClick={handleOpenCreateTest}>
+                                + Add New Test
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -375,6 +453,45 @@ export default function Module() {
                                     <button type="submit" className="button-submition">Create</button>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                )}
+
+                {isCreateTestOpen && (
+                    <div className="modal-overlay" onClick={handleCloseCreateTest}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{maxWidth: 1000, overflowY: 'auto', maxHeight: '90vh'}}>
+                            <TestCreationForm onCreate={handleCreateTestSubmit} defaultModuleId={id} />
+                            <div className="modal-buttons" style={{marginTop: 15}}>
+                                <button type="button" onClick={handleCloseCreateTest} className="button">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {isEditTestOpen && (
+                    <div className="modal-overlay" onClick={handleCloseEditTest}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{maxWidth: 1000, overflowY: 'auto', maxHeight: '90vh'}}>
+                            <TestEditForm tests={tests.map(t => ({...t, id: t._id}))} onUpdate={handleEditTestSubmit} defaultModuleId={id} initialSelectedId={selectedTestIdForForm} />
+                            <div className="modal-buttons" style={{marginTop: 15}}>
+                                <button type="button" onClick={handleCloseEditTest} className="button">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {isDeleteTestOpen && (
+                    <div className="modal-overlay" onClick={handleCloseDeleteTest}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{maxWidth: 1000, overflowY: 'auto', maxHeight: '90vh'}}>
+                            <TestDeleteForm tests={tests.map(t => ({...t, id: t._id}))} onConfirm={handleDeleteTestConfirm} initialSelectedId={selectedTestIdForForm} />
+                            <div className="modal-buttons" style={{marginTop: 15}}>
+                                <button type="button" onClick={handleCloseDeleteTest} className="button">
+                                    Close
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
