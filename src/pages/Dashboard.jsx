@@ -31,7 +31,7 @@ export default function Dashboard() {
                 if (upcomingRes.ok) setUpcoming(await upcomingRes.json());
             } catch (err) {
                 console.error(err);
-                setError("Failed to load page. Please refresh.");
+                // setError("Failed to load page. Please refresh.");
             }
         }
 
@@ -49,7 +49,7 @@ export default function Dashboard() {
     return (
         <>
             <NavBar title={"Your Dashboard"}
-                    description={"Track your task progress"}/>
+                description={"Track your task progress"} />
             <div className="page-container">
 
                 {error && <p className="error-message">{error}</p>}
