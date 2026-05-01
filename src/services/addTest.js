@@ -1,4 +1,4 @@
-export default async function addTest(payload) {
+async function addTest(payload) {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tests/`, {
         method: "POST",
         headers: {
@@ -10,3 +10,4 @@ export default async function addTest(payload) {
 
     return response;
 }
+export default addTest;
