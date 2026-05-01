@@ -99,11 +99,11 @@ function UserRegistrationForm({ onRegister, modules = [] }) {
                                     value={form.course}
                                     onChange={handleChange}
                                 >
-                                    {modules.map((module) => (
-                                        <MenuItem key={module._id} value={module.title}>
-                                            {module.title}
-                                        </MenuItem>
-                                    ))}
+                                {modules.map((module) => (
+                                    <MenuItem key={module._id} value={module._id}>
+                                        {module.title}
+                                    </MenuItem>
+                                ))}
                                 </TextField>
                             </Grid>
                             <Grid size={{ xs: 12 }}>

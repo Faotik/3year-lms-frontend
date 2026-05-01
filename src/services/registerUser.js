@@ -1,5 +1,5 @@
 async function registerUser(userData) {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/register`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
