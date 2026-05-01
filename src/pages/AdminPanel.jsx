@@ -14,6 +14,7 @@ import checkAuth from "../services/checkAuth";
 import { useNavigate } from "react-router-dom";
 import getUsers from "../services/getUsers";
 import registerUser from "../services/registerUser";
+import getModules from "../services/getModules";
 import getAdminStats from "../services/getAdminStats";
 import getGraphStats from "../services/getGraphStats";
 import dayjs from "dayjs";
@@ -33,6 +34,7 @@ function AdminPanel() {
     const [activePage, setActivePage] = useState("dashboard");
 
     const [users, setUsers] = useState([]);
+    const [modules, setModules] = useState([]);
     const [platformStats, setPlatformStats] = useState(null);
     const [graphStats, setGraphStats] = useState([]);
 
@@ -45,6 +47,18 @@ function AdminPanel() {
             }
         } catch (error) {
             console.error("Failed to fetch users:", error);
+        }
+    };
+
+    const fetchModules = async () => {
+        try {
+            const response = await getModules();
+            if (response.ok) {
+                const data = await response.json();
+                setModules(data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch modules:", error);
         }
     };
 
@@ -71,8 +85,20 @@ function AdminPanel() {
 
     useEffect(() => {
         fetchUsers();
+        fetchModules();
         fetchStats();
     }, []);
+
+    const enrichedUsers = useMemo(() => {
+        return users.map(user => {
+            const userId = user.id || user._id || user.ID;
+            const userCourses = modules
+                .filter(m => m.users && m.users.includes(userId))
+                .map(m => m.title)
+                .join(", ");
+            return { ...user, course: userCourses || "None" };
+        });
+    }, [users, modules]);
 
     const dashboardStats = useMemo(() => {
         if (platformStats) {
@@ -280,16 +306,16 @@ function AdminPanel() {
                         <Typography variant="h6" sx={{ mb: 1.2 }} fontWeight={700}>
                             Registered users
                         </Typography>
-                        <StudentsTable rows={users} />
+                        <StudentsTable rows={enrichedUsers} />
                     </Box>
                 </Stack>
             );
         } else if (activePage === "register") {
-            return <UserRegistrationForm onRegister={handleRegisterUser} />;
+            return <UserRegistrationForm onRegister={handleRegisterUser} modules={modules} />;
         } else if (activePage === "manage") {
             return (
                 <UserManagement 
-                    users={users} 
+                    users={enrichedUsers} 
                     onUserUpdated={handleUserUpdated} 
                     onUserDeleted={handleUserDeleted} 
                 />

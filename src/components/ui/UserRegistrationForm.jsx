@@ -20,7 +20,7 @@ const initialForm = {
     password: ""
 };
 
-function UserRegistrationForm({ onRegister }) {
+function UserRegistrationForm({ onRegister, modules = [] }) {
     const [form, setForm] = useState(initialForm);
     const [success, setSuccess] = useState("");
 
@@ -91,13 +91,20 @@ function UserRegistrationForm({ onRegister }) {
                             </Grid>
                             <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
+                                    select
                                     fullWidth
                                     required
                                     name="course"
                                     label="Primary course"
                                     value={form.course}
                                     onChange={handleChange}
-                                />
+                                >
+                                    {modules.map((module) => (
+                                        <MenuItem key={module._id} value={module.title}>
+                                            {module.title}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
                             </Grid>
                             <Grid size={{ xs: 12 }}>
                                 <TextField
@@ -124,7 +131,8 @@ function UserRegistrationForm({ onRegister }) {
 }
 
 UserRegistrationForm.propTypes = {
-    onRegister: PropTypes.func.isRequired
+    onRegister: PropTypes.func.isRequired,
+    modules: PropTypes.array
 };
 
 export default UserRegistrationForm;
