@@ -13,8 +13,8 @@ import {
 import PropTypes from "prop-types";
 import { useMemo, useState } from "react";
 
-function TestDeleteForm({ tests, onConfirm }) {
-    const [selectedId, setSelectedId] = useState("");
+function TestDeleteForm({ tests, onConfirm, initialSelectedId }) {
+    const [selectedId, setSelectedId] = useState(initialSelectedId || "");
     const [armed, setArmed] = useState(false);
     const [success, setSuccess] = useState("");
 
@@ -31,7 +31,7 @@ function TestDeleteForm({ tests, onConfirm }) {
     const handleConfirm = () => {
         if (!selectedTest) return;
         onConfirm(selectedTest.id);
-        setSuccess(`Deleted "${selectedTest.title || "Untitled"}" (frontend-only).`);
+        setSuccess(`Deleted "${selectedTest.title || "Untitled"}".`);
         reset();
     };
 
@@ -44,7 +44,7 @@ function TestDeleteForm({ tests, onConfirm }) {
                             Delete test
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            Frontend-only delete (no backend request).
+                            Permanently delete a test.
                         </Typography>
                     </div>
 

@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import {useEffect, useMemo, useState} from "react";
 import {createTestDraft, toISOFromLocalDatetime, toLocalDatetimeValue} from "./testFormUtils";
 
-function TestEditForm({tests, onUpdate, defaultModuleId}) {
-    const [selectedId, setSelectedId] = useState("");
+function TestEditForm({tests, onUpdate, defaultModuleId, initialSelectedId}) {
+    const [selectedId, setSelectedId] = useState(initialSelectedId || "");
     const [form, setForm] = useState(() => createTestDraft({moduleId: defaultModuleId || ""}));
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
@@ -65,7 +65,7 @@ function TestEditForm({tests, onUpdate, defaultModuleId}) {
         }
 
         onUpdate(payload);
-        setSuccess("Test updated (frontend-only).");
+        setSuccess("Test updated successfully.");
     };
 
     return (
@@ -77,7 +77,7 @@ function TestEditForm({tests, onUpdate, defaultModuleId}) {
                             Edit test
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            Select a “fetched” test and update its details (no real API calls).
+                            Select a test and update its details.
                         </Typography>
                     </div>
 
