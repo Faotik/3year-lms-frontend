@@ -1,5 +1,5 @@
-async function deleteTest(id) {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tests/${id}`, {
+async function deleteUser(userId) {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${userId}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -8,6 +8,6 @@ async function deleteTest(id) {
     });
 
     return response;
-}
+};
 
-export default deleteTest;
+export default deleteUser;

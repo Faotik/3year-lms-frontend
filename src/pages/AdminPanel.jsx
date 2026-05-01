@@ -9,9 +9,11 @@ import ChartCard from "../components/ui/ChartCard";
 import CalendarCard from "../components/ui/CalendarCard";
 import StudentsTable from "../components/ui/StudentsTable";
 import UserRegistrationForm from "../components/ui/UserRegistrationForm";
+import UserManagement from "../components/ui/UserManagement";
 import checkAuth from "../services/checkAuth";
 import { useNavigate } from "react-router-dom";
 import getUsers from "../services/getUsers";
+import registerUser from "../services/registerUser";
 import dayjs from "dayjs";
 
 function AdminPanel() {
@@ -21,7 +23,7 @@ function AdminPanel() {
         if (!checkAuth(["admin"])) {
             navigate("/login");
         }
-    }, []);
+    }, [navigate]);
 
     //const themeMode = "dark"; 
     const themeMode = "light";
@@ -29,22 +31,21 @@ function AdminPanel() {
     const [activePage, setActivePage] = useState("dashboard");
 
     const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
+
+    const fetchUsers = async () => {
+        try {
+            const response = await getUsers();
+            if (response.ok) {
+                const data = await response.json();
+                setUsers(data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch users:", error);
+        } finally {
+        }
+    };
 
     useEffect(() => {
-        async function fetchUsers() {
-            try {
-                const response = await getUsers();
-                if (response.ok) {
-                    const data = await response.json();
-                    setUsers(data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch users:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
         fetchUsers();
     }, []);
 
@@ -94,19 +95,36 @@ function AdminPanel() {
         return last7Days;
     }, [users]);
 
-    const handleRegisterUser = (form) => {
-        setUsers((prev) => [
-            {
-                ...form,
-                email: form.email.toLowerCase(),
-                ID: 0
-            },
-            ...prev
-        ]);
-        setActivePage("dashboard");
+    const handleRegisterUser = async (form) => {
+        try {
+            const response = await registerUser(form);
+            if (response.ok) {
+                await fetchUsers();
+                setActivePage("dashboard");
+            } else {
+                console.error("Registration failed");
+            }
+        } catch (error) {
+            console.error("Error registering user:", error);
+        }
     };
 
-    const pageTitle = activePage === "dashboard" ? "Admin panel" : "Register users";
+    const handleUserUpdated = () => {
+        fetchUsers();
+    };
+
+    const handleUserDeleted = (userId) => {
+        setUsers((prev) => prev.filter(u => (u.id || u._id || u.ID) !== userId));
+    };
+
+    const getPageTitle = () => {
+        switch (activePage) {
+            case "dashboard": return "Admin panel";
+            case "register": return "Register users";
+            case "manage": return "Manage users";
+            default: return "Admin panel";
+        }
+    };
 
     const adminTheme = useMemo(
         () =>
@@ -184,6 +202,58 @@ function AdminPanel() {
         [themeMode]
     );
 
+    const renderContent = () => {
+        if (activePage === "dashboard") {
+            return (
+                <Stack spacing={3}>
+                    <Grid container spacing={2}>
+                        {dashboardStats.map((card) => (
+                            <Grid key={card.title} size={{ xs: 12, sm: 6, lg: 3 }}>
+                                <StatCard
+                                    title={card.title}
+                                    value={card.value}
+                                    interval={card.interval}
+                                    trend={card.trend}
+                                />
+                            </Grid>
+                        ))}
+                    </Grid>
+
+                    <Grid container spacing={2}>
+                        <Grid size={{ xs: 12, lg: 8 }}>
+                            <ChartCard
+                                title="User Registration"
+                                subtitle="New users joined over the last 7 days"
+                                data={chartData}
+                                dataKey="users"
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12, lg: 4 }}>
+                            <CalendarCard />
+                        </Grid>
+                    </Grid>
+
+                    <Box>
+                        <Typography variant="h6" sx={{ mb: 1.2 }} fontWeight={700}>
+                            Registered users
+                        </Typography>
+                        <StudentsTable rows={users} />
+                    </Box>
+                </Stack>
+            );
+        } else if (activePage === "register") {
+            return <UserRegistrationForm onRegister={handleRegisterUser} />;
+        } else if (activePage === "manage") {
+            return (
+                <UserManagement 
+                    users={users} 
+                    onUserUpdated={handleUserUpdated} 
+                    onUserDeleted={handleUserDeleted} 
+                />
+            );
+        }
+    };
+
     return (
         <ThemeProvider theme={adminTheme}>
             <CssBaseline />
@@ -204,7 +274,7 @@ function AdminPanel() {
                             flexDirection: "column",
                         }}
                     >
-                        <NavBar title={pageTitle} description={"Platform administration"} onOpenSidebar={() => setMobileSidebarOpen(true)} />
+                        <NavBar title={getPageTitle()} description={"Platform administration"} onOpenSidebar={() => setMobileSidebarOpen(true)} />
                         <Box
                             component="main"
                             sx={{
@@ -214,45 +284,7 @@ function AdminPanel() {
                                 p: { xs: 2, md: 3 },
                             }}
                         >
-                            {activePage === "dashboard" ? (
-                                <Stack spacing={3}>
-                                    <Grid container spacing={2}>
-                                        {dashboardStats.map((card) => (
-                                            <Grid key={card.title} size={{ xs: 12, sm: 6, lg: 3 }}>
-                                                <StatCard
-                                                    title={card.title}
-                                                    value={card.value}
-                                                    interval={card.interval}
-                                                    trend={card.trend}
-                                                />
-                                            </Grid>
-                                        ))}
-                                    </Grid>
-
-                                    <Grid container spacing={2}>
-                                        <Grid size={{ xs: 12, lg: 8 }}>
-                                            <ChartCard
-                                                title="User Registration"
-                                                subtitle="New users joined over the last 7 days"
-                                                data={chartData}
-                                                dataKey="users"
-                                            />
-                                        </Grid>
-                                        <Grid size={{ xs: 12, lg: 4 }}>
-                                            <CalendarCard />
-                                        </Grid>
-                                    </Grid>
-
-                                    <Box>
-                                        <Typography variant="h6" sx={{ mb: 1.2 }} fontWeight={700}>
-                                            Registered users
-                                        </Typography>
-                                        <StudentsTable rows={users} />
-                                    </Box>
-                                </Stack>
-                            ) : (
-                                <UserRegistrationForm onRegister={handleRegisterUser} />
-                            )}
+                            {renderContent()}
                         </Box>
                     </Box>
                 </Box>

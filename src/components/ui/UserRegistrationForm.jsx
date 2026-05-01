@@ -16,7 +16,8 @@ const initialForm = {
     name: "",
     email: "",
     role: "student",
-    course: ""
+    course: "",
+    password: ""
 };
 
 function UserRegistrationForm({ onRegister }) {
@@ -95,6 +96,17 @@ function UserRegistrationForm({ onRegister }) {
                                     name="course"
                                     label="Primary course"
                                     value={form.course}
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid size={{ xs: 12 }}>
+                                <TextField
+                                    fullWidth
+                                    required
+                                    type="password"
+                                    name="password"
+                                    label="Password"
+                                    value={form.password}
                                     onChange={handleChange}
                                 />
                             </Grid>

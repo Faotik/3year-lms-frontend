@@ -1,4 +1,4 @@
-export default async function updateTest(payload) {
+async function updateTest(payload) {
     const id = payload.id || payload._id;
     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/tests/${id}/`, {
         method: "PUT",
@@ -11,3 +11,4 @@ export default async function updateTest(payload) {
 
     return response;
 }
+export default updateTest;

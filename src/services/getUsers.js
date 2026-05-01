@@ -1,5 +1,5 @@
-export default async function getUsers() {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/`, {
+async function getUsers() {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -9,3 +9,5 @@ export default async function getUsers() {
 
     return response;
 };
+
+export default getUsers;

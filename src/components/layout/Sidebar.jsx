@@ -9,10 +9,12 @@ import {
 } from "@mui/material";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
+import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
 
 const menuItems = [
     { key: "dashboard", label: "Dashboard", icon: <DashboardRoundedIcon fontSize="small" /> },
-    { key: "register", label: "Register users", icon: <PersonAddAltRoundedIcon fontSize="small" /> }
+    { key: "register", label: "Register users", icon: <PersonAddAltRoundedIcon fontSize="small" /> },
+    { key: "manage", label: "Manage users", icon: <ManageAccountsRoundedIcon fontSize="small" /> }
 ];
 
 const drawerWidth = 240;
