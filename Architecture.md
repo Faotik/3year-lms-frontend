@@ -1,164 +1,161 @@
-# Project Architecture
+# Moodle Frontend
 
-## Main Approach
+This is a frontend for A Moodle-inspired LMS built with **React**, **Material UI (MUI)**. 
+The project provide responsive, flexible interface for students, teachers, and admins to interact with the  Backend APIs calls.
 
-We split the project into small folders so everything is easy to spot and navigate.
+## 1. Navigation
 
+- [1. Navigation](#1-navigation)
+- [2. Project Overview](#2-project-overview)
+- [3. System Architecture](#3-system-architecture)
+- [4. Project Structure](#4-project-structure)
+- [5. Installation & Setup](#5-installation--setup)
+- [6. Running the Project](#6-running-the-project)
+- [7. Authentication](#7-authentication)
+- [8. Routing & Pages](#8-routing--pages)
+- [9. Services Layer](#9-services-layer)
+- [10. Role-Based Access Control](#10-role-based-access-control)
+- [11. Team Contributions](#11-team-contributions)
+- [12. Project Deployment](#12-project-deployment)
+- [13. Reference](#13-reference)
+
+## 2. Project Overview
+
+- **User roles**: `student`, `teacher`, `admin`.
+- **Main features**:
+    - Dynamic and interactive dashboards for different roles.
+    - Module, assignment, submissions and tests management.
+    - Test/Quiz taking interface.
+    - Admin panel for platform management.
+    - Responsive design using Material UI.
+    - 
+
+## 3. System Architecture
+
+- **Architecture**: The application is a Single Page Application where routing is handled client-side by `react-router-dom`.
+- **Services**: API calls are stored into a `src/services` directory, for modularity and isolation.
+- **Component-Based Design**: Platform built with using reusable components to form UI.
+- **Authentication Flow**:
+    - User logs in via `LoginPage`.
+    - Backend sets a session cookie.
+    - Frontend maintains user state and role to conditionalize rendering.
+- **Data Fetching**: Components use `useEffect` to fetch data from the services layer.
+
+## 4. Project Structure
+```text
+3year-moodle-frontend/
+├── public/
+├── src/
+│   ├── app/
+│   │   └── App.js          # Main routing and entry point
+│   ├── components/
+│   │   ├── common/         # Global shared components
+│   │   ├── layout/         # Components used across different pages
+│   │   └── ui/             # Basic UI elements
+│   ├── pages/              # Pages used for routing
+│   │   ├── Login.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── AdminPanel.jsx
+│   │   ├── Modules.jsx
+│   │   ├── Module.jsx
+│   │   ├── Submitions.jsx
+│   │   └── Test.jsx
+│   ├── services/           # API interaction functions 
+│   ├── styles/             # Global CSS
+│   ├── assets/             # Images and other assets
+│   ├── index.js            # React entering point
+├── package.json
+└── .env.template
 ```
-src/
-├── app/
-├── components/
-├── pages/
-├── hooks/
-├── context/
-├── services/
-├── utils/
-├── constants/
-├── styles/
-└── assets/
-└── index.js
+
+## 5. Installation & Setup
+
+### Prerequisites
+- Node.js (v18+)
+- npm
+
+### Clone and install
+```bash
+git clone https://github.com/Faotik/3year-moodle-frontend
+cd 3year-moodle-frontend
+npm install
 ```
 
-**Do not touch `index.js`, this file will invocate and start all the app**
+### Configure environment
+Create a `.env` file from .env.template in the root directory and set the backend API URL:
+```env
+REACT_APP_API_URL=http://localhost:5000
+```
 
----
+## 6. Running the Project
 
-## Responsibilities
+### Development mode
+```bash
+npm start
+```
+Starts the development server at `http://localhost:3000`.
 
-### `app/`
+## 7. Authentication
 
-Main entry of the app. Here all pages and routing are mounted.
+The frontend relies on **Session-based authentication** provided by the backend. 
+1. The user enter is  credentials on the `Login` page.
+2. The backend validates and sets a `connect.sid` cookie.
+3. The frontend verifies authentication state by calling `checkAuth` service.
 
-* `App.js` → app entry point
+## 8. Routing & Pages
 
----
+Routes are defined in `src/app/App.js`:
 
-### `components/`
+| Path | Page | Access |
+|------|------|--------|
+| `/login` | `Login` | Public |
+| `/` | `Dashboard` | Authenticated |
+| `/modules` | `Modules` | Authenticated |
+| `/modules/:id` | `Module` | Authenticated |
+| `/admin-panel` | `AdminPanel` | Admin |
+| `/modules/assignments/:id/submitions` | `Submitions` | Teacher/Admin |
+| `/modules/tests/:id` | `Test` | Student |
 
-Reusable, global UI pieces. Organised into three sub-folders:
+## 9. Services Layer
 
-* `common/` → general-purpose pieces used anywhere (e.g. `LoadingSpinner`, `ErrorMessage`)
-* `layout/` → structural pieces (e.g. `Navbar`, `Sidebar`, `Footer`)
-* `ui/` → base visual elements (e.g. `Button`, `Input`, `Card`)
-
-**Defining rule**: if a piece of UI is used in more than one place → it belongs here.
-
----
-
-### `pages/`
-
-Full screens that the user sees in the browser.
-
+The `src/services` directory contains API operations stored individual, one request in separate file.
 Examples:
+- `login.js`: Handles user authentication.
+- `getModules.js`: Fetches list of modules.
+- `addAssignment.js`: Handles assignment creation for teachers.
 
-* Home page
-* Login page
-* Module page
+## 10. Role-Based Access Control
 
-Here goes the entire page that user will see in browser, not just a component
+The frontend implements role-based rendering:
+- **Admin**: Access to `AdminPanel`, showing platform statistic, giving access for user management, module management.
+- **Teacher**: Access to assignments management and viewing submissions linked to created assignments.
+- **Student**: Access to module content, assignment submission, and tests.
 
----
+## 11. Team Contributions
 
-### `hooks/`
+| Member            | Student Number |
+|-------------------|----------------|
+| `Roman Polishcuk` | 3135838        |
+| `Kornii Kuvaldin` | 3134926        |
+| `Stanislav Kril`  | 3133810        |
 
-Reusable React logic extracted into custom hook functions.
+Contribution:
+- Project initial architecture - `Stanislav Kril`
+- Project Documentation - `Stanislav Kril`
+- Admin panel page - `Stanislav Kril`
+- Sidebar, NavBar, CalendarCard, ChartCard, StatCard, StudentsTable components - `Stanislav Kril`
+- TestDeleteForm, TestEditForm, UserManagement, UserRegistrationForm components - `Stanislav Kril`
+- Test services - `Stanislav Kril`
+- User Management services - `Stanislav Kril`
+- Calendar services - `Stanislav Kril`
+- Admin stats services - `Stanislav Kril`
 
-A hook is a plain JS function that starts with `use`. It lets you share stateful logic across multiple components without copy-pasting.
-
-Example — `useUser.js`:
-
-```js
-// hooks/useUser.js
-import { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-
-export function useUser() {
-  const { user } = useContext(AuthContext);
-  return {
-    user,
-    role: user?.role,           // "student" | "teacher" | "admin"
-    isStudent: user?.role === 'student',
-    isTeacher: user?.role === 'teacher',
-    isAdmin:   user?.role === 'admin',
-  };
-}
-```
-
-Any component can then just do:
-
-```js
-import { useUser } from '../hooks/useUser';
-
-const { isAdmin } = useUser();
-```
-
-**Rule of thumb**: if the same React logic (state, effects, context reads) appears in more than one component → extract it into a hook here.
-
----
-
-### `context/`
-
-Global data that needs to be shared across the whole app without prop-drilling.
-
-Examples:
-
-* `AuthContext` → stores the current `user` object and `setUser`
-* Role information derived from the user
+## 12. Project Deployment
 
 
----
+## 13. Reference
 
-### `services/`
-
-All future backend communication lives here. Currently empty / placeholders.
-
-Later:
-
-```js
-getCourses()
-login()
-getModuleById(id)
-```
-
-**Rule**: no component ever calls an API directly — it always goes through a service function.
-
----
-
-### `utils/`
-
-Small, pure helper functions with no React dependency.
-
-Examples:
-
-* `formatDate(date)`
-* `validateEmail(email)`
-* `truncateText(text, maxLength)`
-
----
-
-### `constants/`
-
-Fixed values shared across the app.
-
-Example:
-
-```js
-// constants/roles.js
-export const ROLES = {
-  STUDENT: 'student',
-  TEACHER: 'teacher',
-  ADMIN:   'admin',
-};
-```
-
----
-
-### `styles/`
-
-Global CSS files (resets, variables, typography).
-
----
-
-### `assets/`
-
-Static files: images, icons, fonts.
+- [React Documentation](https://react.dev/)
+- [Material UI Documentation](https://mui.com/material-ui/)
+- [Material UI components template](https://mui.com/material-ui/getting-started/templates/)
+- [React Router Documentation](https://reactrouter.com/)
