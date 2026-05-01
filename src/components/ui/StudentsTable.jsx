@@ -28,7 +28,7 @@ function StudentsTable({ rows }) {
                             <TableCell>
                                 <Chip size="small" label={row.role} />
                             </TableCell>
-                            <TableCell>№{row.ID}</TableCell>
+                            <TableCell>№{row.ID || row.id || row._id || "N/A"}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

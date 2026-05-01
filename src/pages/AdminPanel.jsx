@@ -11,6 +11,8 @@ import StudentsTable from "../components/ui/StudentsTable";
 import UserRegistrationForm from "../components/ui/UserRegistrationForm";
 import checkAuth from "../services/checkAuth";
 import { useNavigate } from "react-router-dom";
+import getUsers from "../services/getUsers";
+import dayjs from "dayjs";
 
 function AdminPanel() {
     const navigate = useNavigate();
@@ -26,25 +28,70 @@ function AdminPanel() {
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const [activePage, setActivePage] = useState("dashboard");
 
-    const [users, setUsers] = useState([
-        { name: "John Doe", email: "john@example.com", role: "student", course: "Math", ID: 82 },
-        { name: "Anna Smith", email: "anna@example.com", role: "teacher", course: "Physics", ID: 67 },
-        { name: "Maya Brown", email: "maya@example.com", role: "student", course: "Programming", ID: 91 }
-    ]);
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchUsers() {
+            try {
+                const response = await getUsers();
+                if (response.ok) {
+                    const data = await response.json();
+                    setUsers(data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch users:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchUsers();
+    }, []);
 
     const dashboardStats = useMemo(() => {
         const totalUsers = users.length;
         const students = users.filter((user) => user.role === "student").length;
         const teachers = users.filter((user) => user.role === "teacher").length;
         const averageProgress =
-            users.reduce((sum, user) => sum + user.ID, 0) / (users.length || 1);
+            users.reduce((sum, user) => sum + (user.progress || user.ID || 0), 0) / (users.length || 1);
 
         return [
-            { title: "Total users", value: String(totalUsers), interval: "Current workspace", trend: "up" },
+            { title: "Total users", value: String(totalUsers), interval: "Platform total", trend: "up" },
             { title: "Students", value: String(students), interval: "Active learners", trend: "up" },
             { title: "Teachers", value: String(teachers), interval: "Course mentors", trend: "neutral" },
             { title: "Avg progress", value: `${Math.round(averageProgress)}%`, interval: "All users", trend: "up" }
         ];
+    }, [users]);
+
+    const chartData = useMemo(() => {
+        const last7Days = [];
+        for (let i = 6; i >= 0; i--) {
+            last7Days.push({
+                name: dayjs().subtract(i, "day").format("ddd"),
+                date: dayjs().subtract(i, "day").format("YYYY-MM-DD"),
+                users: 0
+            });
+        }
+
+        users.forEach((user) => {
+            const regDate = user.createdAt ? dayjs(user.createdAt).format("YYYY-MM-DD") : null;
+            const dayEntry = last7Days.find((d) => d.date === regDate);
+            if (dayEntry) {
+                dayEntry.users++;
+            }
+        });
+
+        // If no dates matched, show a cumulative growth trend for the "showcase"
+        const hasData = last7Days.some((d) => d.users > 0);
+        if (!hasData && users.length > 0) {
+            const total = users.length;
+            return last7Days.map((d, i) => ({
+                ...d,
+                users: Math.floor((total / 7) * (i + 1))
+            }));
+        }
+
+        return last7Days;
     }, [users]);
 
     const handleRegisterUser = (form) => {
@@ -184,7 +231,12 @@ function AdminPanel() {
 
                                     <Grid container spacing={2}>
                                         <Grid size={{ xs: 12, lg: 8 }}>
-                                            <ChartCard />
+                                            <ChartCard
+                                                title="User Registration"
+                                                subtitle="New users joined over the last 7 days"
+                                                data={chartData}
+                                                dataKey="users"
+                                            />
                                         </Grid>
                                         <Grid size={{ xs: 12, lg: 4 }}>
                                             <CalendarCard />

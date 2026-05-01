@@ -10,18 +10,9 @@ import {
     ResponsiveContainer,
     CartesianGrid
 } from "recharts";
+import PropTypes from "prop-types";
 
-const data = [
-    { name: "Mon", attendance: 40 },
-    { name: "Tue", attendance: 60 },
-    { name: "Wed", attendance: 78 },
-    { name: "Thu", attendance: 67 },
-    { name: "Fri", attendance: 88 },
-    { name: "Sat", attendance: 55 },
-    { name: "Sun", attendance: 30 },
-];
-
-function ChartCard() {
+function ChartCard({ data, title, subtitle, dataKey }) {
     const theme = useTheme();
     const isDark = theme.palette.mode === "dark";
 
@@ -29,10 +20,10 @@ function ChartCard() {
         <Card variant="outlined" sx={{ borderColor: "divider", height: "100%" }}>
             <CardContent>
                 <Typography variant="h6" fontWeight={700}>
-                    Weekly attendance
+                    {title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>
-                    Student activity over the last 7 days
+                    {subtitle}
                 </Typography>
                 <ResponsiveContainer width="100%" height={260}>
                     <LineChart data={data} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
@@ -51,7 +42,7 @@ function ChartCard() {
                         <Tooltip />
                         <Line
                             type="monotone"
-                            dataKey="attendance"
+                            dataKey={dataKey}
                             stroke={isDark ? "#60a5fa" : "#1d4ed8"}
                             strokeWidth={3}
                             dot={{ r: 3, fill: isDark ? "#60a5fa" : "#1d4ed8", strokeWidth: 0 }}
@@ -64,4 +55,11 @@ function ChartCard() {
     );
 }
 
-export default ChartCard
+ChartCard.propTypes = {
+    data: PropTypes.array,
+    title: PropTypes.string,
+    subtitle: PropTypes.string,
+    dataKey: PropTypes.string
+};
+
+export default ChartCard;
