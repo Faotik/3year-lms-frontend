@@ -494,6 +494,7 @@ export default function Module() {
                         </div>
                     )}
                 </div >
+            )}
         </>
     );
 }

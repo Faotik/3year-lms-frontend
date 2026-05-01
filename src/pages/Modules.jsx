@@ -63,7 +63,6 @@ export default function Modules() {
 
     const handleOpenEdit = (module) => {
         setSelectedModule(module._id);
-        console.log(module);
 
         setEditData({
             title: module.title,
@@ -183,8 +182,8 @@ export default function Modules() {
                                                 value: user._id
                                             }))
                                         }
-                                        value={createData.users}
-                                        onChange={(users) => { setCreateData({ ...createData, users }); }}
+                                        value={editData.users}
+                                        onChange={(users) => { setEditData({ ...editData, users }); }}
                                     />
 
                                     <div className="popup-buttons">
