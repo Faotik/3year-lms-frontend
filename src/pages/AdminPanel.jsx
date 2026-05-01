@@ -14,6 +14,8 @@ import checkAuth from "../services/checkAuth";
 import { useNavigate } from "react-router-dom";
 import getUsers from "../services/getUsers";
 import registerUser from "../services/registerUser";
+import getAdminStats from "../services/getAdminStats";
+import getGraphStats from "../services/getGraphStats";
 import dayjs from "dayjs";
 
 function AdminPanel() {
@@ -31,6 +33,8 @@ function AdminPanel() {
     const [activePage, setActivePage] = useState("dashboard");
 
     const [users, setUsers] = useState([]);
+    const [platformStats, setPlatformStats] = useState(null);
+    const [graphStats, setGraphStats] = useState([]);
 
     const fetchUsers = async () => {
         try {
@@ -41,15 +45,46 @@ function AdminPanel() {
             }
         } catch (error) {
             console.error("Failed to fetch users:", error);
-        } finally {
+        }
+    };
+
+    const fetchStats = async () => {
+        try {
+            const [statsRes, graphRes] = await Promise.all([
+                getAdminStats(),
+                getGraphStats()
+            ]);
+
+            if (statsRes.ok) {
+                const statsData = await statsRes.json();
+                setPlatformStats(statsData);
+            }
+
+            if (graphRes.ok) {
+                const graphData = await graphRes.json();
+                setGraphStats(graphData);
+            }
+        } catch (error) {
+            console.error("Failed to fetch stats:", error);
         }
     };
 
     useEffect(() => {
         fetchUsers();
+        fetchStats();
     }, []);
 
     const dashboardStats = useMemo(() => {
+        if (platformStats) {
+            return [
+                { title: "Total users", value: String(platformStats.users || 0), interval: "Platform total", trend: "up" },
+                { title: "Modules", value: String(platformStats.modules || 0), interval: "Active courses", trend: "up" },
+                { title: "Assignments", value: String(platformStats.assignments || 0), interval: "Current tasks", trend: "neutral" },
+                { title: "Submissions", value: String(platformStats.submissions || 0), interval: "Student work", trend: "up" }
+            ];
+        }
+
+        // Fallback to client-side calc if stats API fails or is loading
         const totalUsers = users.length;
         const students = users.filter((user) => user.role === "student").length;
         const teachers = users.filter((user) => user.role === "teacher").length;
@@ -62,9 +97,17 @@ function AdminPanel() {
             { title: "Teachers", value: String(teachers), interval: "Course mentors", trend: "neutral" },
             { title: "Avg progress", value: `${Math.round(averageProgress)}%`, interval: "All users", trend: "up" }
         ];
-    }, [users]);
+    }, [users, platformStats]);
 
     const chartData = useMemo(() => {
+        if (graphStats && graphStats.length > 0) {
+            return graphStats.map(item => ({
+                name: item.name || dayjs(item.date).format("ddd"),
+                date: item.date,
+                users: item.users || item.count || 0
+            }));
+        }
+
         const last7Days = [];
         for (let i = 6; i >= 0; i--) {
             last7Days.push({
@@ -93,7 +136,7 @@ function AdminPanel() {
         }
 
         return last7Days;
-    }, [users]);
+    }, [users, graphStats]);
 
     const handleRegisterUser = async (form) => {
         try {
