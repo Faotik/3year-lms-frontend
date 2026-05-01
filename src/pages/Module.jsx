@@ -96,8 +96,6 @@ export default function Module() {
 
             }
 
-            console.log(data);
-
             data.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
             setTests(data);
         }
@@ -115,7 +113,6 @@ export default function Module() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(e.target.value);
         await submitAssignment(selectedAssignment, submissionText);
         await fetchAssignments();
 
@@ -208,294 +205,296 @@ export default function Module() {
     return (
         <>
             <NavBar title="Module" />
-            <div className="page-container">
-                <div className="module-container">
-                    <div className="tabs">
-                        <button
-                            className={`tab ${activeTab === "assignments" ? "active" : ""}`}
-                            onClick={() => setActiveTab("assignments")}
-                        >
-                            Assignments
-                        </button>
-
-                        <button
-                            className={`tab ${activeTab === "tests" ? "active" : ""}`}
-                            onClick={() => setActiveTab("tests")}
-                        >
-                            Tests
-                        </button>
-                    </div>
-
-                    <div className="list">
-                        {activeTab === "assignments" && assignments.map((assignment) => (
-                            <div className="card" key={assignment._id}>
-                                <div className="card-desc">
-                                    <h3>{assignment.title}</h3>
-                                    <p>{assignment.description}</p>
-                                    <p className="deadline-text">
-                                        <strong>Due:</strong> {new Date(assignment.deadline).toLocaleDateString()}
-                                    </p>
-                                </div>
-                                {assignment.submission && user.role === "student" && (
-                                    <div className="card-score">Already submitted</div>
-                                )}
-                                {!assignment.submission && user.role === "student" && (
-                                    <button
-                                        type="button"
-                                        className="button-submition"
-                                        onClick={() => handleOpenSubmission(assignment._id)}
-                                    >
-                                        Add submission
-                                    </button>
-                                )}
-                                {user.role !== "student" && (
-                                    <button
-                                        type="button"
-                                        className="button-submition"
-                                        onClick={() => handleOpenEdit(assignment)}
-                                    >
-                                        Edit
-                                    </button>
-                                )}
-                                {user.role !== "student" && (
-                                    <button
-                                        type="button"
-                                        className="button-submition"
-                                        onClick={() => handleDeleteAssignment(assignment._id)}
-                                    >
-                                        Delete
-                                    </button>
-                                )}
-                                {user.role !== "student" && (
-                                    <button
-                                        type="button"
-                                        className="button-submition"
-                                        onClick={() => navigate(`/modules/assignments/${assignment._id}/submitions`)}
-                                    >
-                                        View
-                                    </button>
-                                )}
-                            </div>
-                        ))}
-
-                        {activeTab === "assignments" && assignments.length === 0 && (
-                            <p>No assignments found for this module.</p>
-                        )}
-
-                        {activeTab === "assignments" && user.role !== "student" && (
-                            <button className="button-submition" onClick={handleOpenCreate}>
-                                + Add New Assignment
+            {error || (
+                <div className="page-container">
+                    <div className="module-container">
+                        <div className="tabs">
+                            <button
+                                className={`tab ${activeTab === "assignments" ? "active" : ""}`}
+                                onClick={() => setActiveTab("assignments")}
+                            >
+                                Assignments
                             </button>
-                        )}
 
-                        {activeTab === "tests" && tests.map((test) => (
-                            <div className="card" key={test._id}>
-                                <div className="card-desc">
-                                    <h3>{test.title}</h3>
-                                    <p>{test.description}</p>
-                                    <p>Due: {new Date(test.deadline).toLocaleDateString()}</p>
-                                </div>
-                                {test.submissions.length > 0 && user.role === "student" && (
-                                    <div className="card-score">{getScore(test.submissions)}</div>
-                                )}
-                                {test.submissions.length === 0 && user.role === "student" && (
-                                    <button
-                                        className="button-submition"
-                                        onClick={() => navigate(`/modules/tests/${test._id}`)}
-                                    >
-                                        Start Test
-                                    </button>
-                                )}
-                                {user.role !== "student" && (
-                                    <button
-                                        type="button"
-                                        className="button-submition"
-                                        onClick={() => handleOpenEditTest(test._id)}
-                                    >
-                                        Edit
-                                    </button>
-                                )}
-                                {user.role !== "student" && (
-                                    <button
-                                        type="button"
-                                        className="button-submition"
-                                        onClick={() => handleOpenDeleteTest(test._id)}
-                                    >
-                                        Delete
-                                    </button>
-                                )}
-                                {user.role !== "student" && (
-                                    <button
-                                        type="button"
-                                        className="button-submition"
-                                        onClick={() => navigate(`/modules/tests/${test._id}/submitions`)}
-                                    >
-                                        View
-                                    </button>
-                                )}
-                            </div>
-                        ))}
-
-                        {activeTab === "tests" && tests.length === 0 && (
-                            <p>No tests found for this module.</p>
-                        )}
-
-                        {activeTab === "tests" && user.role !== "student" && (
-                            <button className="button-submition" onClick={handleOpenCreateTest}>
-                                + Add New Test
+                            <button
+                                className={`tab ${activeTab === "tests" ? "active" : ""}`}
+                                onClick={() => setActiveTab("tests")}
+                            >
+                                Tests
                             </button>
-                        )}
-                    </div>
-                </div>
+                        </div>
 
-                {isSubmissionOpen && (
-                    <div className="modal-overlay" onClick={handleCloseSubmission}>
-                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                            <h2>Submit Assignment</h2>
-                            <form onSubmit={handleSubmit}>
-                                <textarea
-                                    value={submissionText}
-                                    onChange={(e) => setSubmissionText(e.target.value)}
-                                    placeholder="Type your submission here..."
-                                    required
-                                />
-                                <div className="modal-buttons">
-                                    <button type="button" onClick={handleCloseSubmission} className="button">
-                                        Cancel
-                                    </button>
-                                    <button type="submit" className="button-submition">
-                                        Submit
-                                    </button>
+                        <div className="list">
+                            {activeTab === "assignments" && assignments.map((assignment) => (
+                                <div className="card" key={assignment._id}>
+                                    <div className="card-desc">
+                                        <h3>{assignment.title}</h3>
+                                        <p>{assignment.description}</p>
+                                        <p className="deadline-text">
+                                            <strong>Due:</strong> {new Date(assignment.deadline).toLocaleDateString()}
+                                        </p>
+                                    </div>
+                                    {assignment.submission && user.role === "student" && (
+                                        <div className="card-score">Already submitted</div>
+                                    )}
+                                    {!assignment.submission && user.role === "student" && (
+                                        <button
+                                            type="button"
+                                            className="button-submition"
+                                            onClick={() => handleOpenSubmission(assignment._id)}
+                                        >
+                                            Add submission
+                                        </button>
+                                    )}
+                                    {user.role !== "student" && (
+                                        <button
+                                            type="button"
+                                            className="button-submition"
+                                            onClick={() => handleOpenEdit(assignment)}
+                                        >
+                                            Edit
+                                        </button>
+                                    )}
+                                    {user.role !== "student" && (
+                                        <button
+                                            type="button"
+                                            className="button-submition"
+                                            onClick={() => handleDeleteAssignment(assignment._id)}
+                                        >
+                                            Delete
+                                        </button>
+                                    )}
+                                    {user.role !== "student" && (
+                                        <button
+                                            type="button"
+                                            className="button-submition"
+                                            onClick={() => navigate(`/modules/assignments/${assignment._id}/submitions`)}
+                                        >
+                                            View
+                                        </button>
+                                    )}
                                 </div>
-                            </form>
+                            ))}
+
+                            {activeTab === "assignments" && assignments.length === 0 && (
+                                <p>No assignments found for this module.</p>
+                            )}
+
+                            {activeTab === "assignments" && user.role !== "student" && (
+                                <button className="button-submition" onClick={handleOpenCreate}>
+                                    + Add New Assignment
+                                </button>
+                            )}
+
+                            {activeTab === "tests" && tests.map((test) => (
+                                <div className="card" key={test._id}>
+                                    <div className="card-desc">
+                                        <h3>{test.title}</h3>
+                                        <p>{test.description}</p>
+                                        <p>Due: {new Date(test.deadline).toLocaleDateString()}</p>
+                                    </div>
+                                    {test.submissions.length > 0 && user.role === "student" && (
+                                        <div className="card-score">{getScore(test.submissions)}</div>
+                                    )}
+                                    {test.submissions.length === 0 && user.role === "student" && (
+                                        <button
+                                            className="button-submition"
+                                            onClick={() => navigate(`/modules/tests/${test._id}`)}
+                                        >
+                                            Start Test
+                                        </button>
+                                    )}
+                                    {user.role !== "student" && (
+                                        <button
+                                            type="button"
+                                            className="button-submition"
+                                            onClick={() => handleOpenEditTest(test._id)}
+                                        >
+                                            Edit
+                                        </button>
+                                    )}
+                                    {user.role !== "student" && (
+                                        <button
+                                            type="button"
+                                            className="button-submition"
+                                            onClick={() => handleOpenDeleteTest(test._id)}
+                                        >
+                                            Delete
+                                        </button>
+                                    )}
+                                    {user.role !== "student" && (
+                                        <button
+                                            type="button"
+                                            className="button-submition"
+                                            onClick={() => navigate(`/modules/tests/${test._id}/submitions`)}
+                                        >
+                                            View
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+
+                            {activeTab === "tests" && tests.length === 0 && (
+                                <p>No tests found for this module.</p>
+                            )}
+
+                            {activeTab === "tests" && user.role !== "student" && (
+                                <button className="button-submition" onClick={handleOpenCreateTest}>
+                                    + Add New Test
+                                </button>
+                            )}
                         </div>
                     </div>
-                )}
 
-                {isEditOpen && (
-                    <div className="modal-overlay" onClick={handleCloseEdit}>
-                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                            <h2>Edit Assignment</h2>
-                            <form onSubmit={handleEditSubmit} className="edit-form">
-                                <div className="edit-form-input">
-                                    <label>Title</label>
-                                    <input
-                                        type="text"
-                                        value={editData.title}
-                                        onChange={(e) => setEditData({ ...editData, title: e.target.value })}
-                                        required
-                                    />
-                                </div>
-
-                                <div className="edit-form-input">
-                                    <label>Description</label>
+                    {isSubmissionOpen && (
+                        <div className="popup-overlay" onClick={handleCloseSubmission}>
+                            <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+                                <h2>Submit Assignment</h2>
+                                <form onSubmit={handleSubmit}>
                                     <textarea
-                                        value={editData.description}
-                                        onChange={(e) => setEditData({ ...editData, description: e.target.value })}
-                                    />
-                                </div>
-
-                                <div className="edit-form-input">
-                                    <label>Deadline</label>
-                                    <input
-                                        type="date"
-                                        value={editData.deadline}
-                                        onChange={(e) => setEditData({ ...editData, deadline: e.target.value })}
+                                        value={submissionText}
+                                        onChange={(e) => setSubmissionText(e.target.value)}
+                                        placeholder="Type your submission here..."
                                         required
                                     />
-                                </div>
+                                    <div className="popup-buttons">
+                                        <button type="button" onClick={handleCloseSubmission} className="button">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" className="button-submition">
+                                            Submit
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
 
-                                <div className="modal-buttons">
-                                    <button type="button" onClick={handleCloseEdit} className="button">
-                                        Cancel
+                    {isEditOpen && (
+                        <div className="popup-overlay" onClick={handleCloseEdit}>
+                            <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+                                <h2>Edit Assignment</h2>
+                                <form onSubmit={handleEditSubmit} className="edit-form">
+                                    <div className="edit-form-input">
+                                        <label>Title</label>
+                                        <input
+                                            type="text"
+                                            value={editData.title}
+                                            onChange={(e) => setEditData({ ...editData, title: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="edit-form-input">
+                                        <label>Description</label>
+                                        <textarea
+                                            value={editData.description}
+                                            onChange={(e) => setEditData({ ...editData, description: e.target.value })}
+                                        />
+                                    </div>
+
+                                    <div className="edit-form-input">
+                                        <label>Deadline</label>
+                                        <input
+                                            type="date"
+                                            value={editData.deadline}
+                                            onChange={(e) => setEditData({ ...editData, deadline: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="popup-buttons">
+                                        <button type="button" onClick={handleCloseEdit} className="button">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" className="button-submition">
+                                            Save Changes
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {isCreateOpen && (
+                        <div className="modal-overlay" onClick={handleCloseCreate}>
+                            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                                <h2>Create New Assignment</h2>
+                                <form onSubmit={handleCreateSubmit} className="edit-form">
+                                    <div className="edit-form-input">
+                                        <label>Title</label>
+                                        <input
+                                            type="text"
+                                            value={createData.title}
+                                            onChange={(e) => setCreateData({ ...createData, title: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="edit-form-input">
+                                        <label>Description</label>
+                                        <textarea
+                                            value={createData.description}
+                                            onChange={(e) => setCreateData({ ...createData, description: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="edit-form-input">
+                                        <label>Deadline</label>
+                                        <input
+                                            type="date"
+                                            value={createData.deadline}
+                                            onChange={(e) => setCreateData({ ...createData, deadline: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="modal-buttons">
+                                        <button type="button" onClick={handleCloseCreate} className="button">Cancel</button>
+                                        <button type="submit" className="button-submition">Create</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {isCreateTestOpen && (
+                        <div className="modal-overlay" onClick={handleCloseCreateTest}>
+                            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 1000, overflowY: 'auto', maxHeight: '90vh' }}>
+                                <TestCreationForm onCreate={handleCreateTestSubmit} defaultModuleId={id} />
+                                <div className="modal-buttons" style={{ marginTop: 15 }}>
+                                    <button type="button" onClick={handleCloseCreateTest} className="button">
+                                        Close
                                     </button>
-                                    <button type="submit" className="button-submition">
-                                        Save Changes
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {isEditTestOpen && (
+                        <div className="modal-overlay" onClick={handleCloseEditTest}>
+                            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 1000, overflowY: 'auto', maxHeight: '90vh' }}>
+                                <TestEditForm tests={tests.map(t => ({ ...t, id: t._id }))} onUpdate={handleEditTestSubmit} defaultModuleId={id} initialSelectedId={selectedTestIdForForm} />
+                                <div className="modal-buttons" style={{ marginTop: 15 }}>
+                                    <button type="button" onClick={handleCloseEditTest} className="button">
+                                        Close
                                     </button>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
-                )}
-
-                {isCreateOpen && (
-                    <div className="modal-overlay" onClick={handleCloseCreate}>
-                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                            <h2>Create New Assignment</h2>
-                            <form onSubmit={handleCreateSubmit} className="edit-form">
-                                <div className="edit-form-input">
-                                    <label>Title</label>
-                                    <input
-                                        type="text"
-                                        value={createData.title}
-                                        onChange={(e) => setCreateData({ ...createData, title: e.target.value })}
-                                        required
-                                    />
-                                </div>
-                                <div className="edit-form-input">
-                                    <label>Description</label>
-                                    <textarea
-                                        value={createData.description}
-                                        onChange={(e) => setCreateData({ ...createData, description: e.target.value })}
-                                    />
-                                </div>
-                                <div className="edit-form-input">
-                                    <label>Deadline</label>
-                                    <input
-                                        type="date"
-                                        value={createData.deadline}
-                                        onChange={(e) => setCreateData({ ...createData, deadline: e.target.value })}
-                                        required
-                                    />
-                                </div>
-                                <div className="modal-buttons">
-                                    <button type="button" onClick={handleCloseCreate} className="button">Cancel</button>
-                                    <button type="submit" className="button-submition">Create</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                )}
-
-                {isCreateTestOpen && (
-                    <div className="modal-overlay" onClick={handleCloseCreateTest}>
-                        <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{maxWidth: 1000, overflowY: 'auto', maxHeight: '90vh'}}>
-                            <TestCreationForm onCreate={handleCreateTestSubmit} defaultModuleId={id} />
-                            <div className="modal-buttons" style={{marginTop: 15}}>
-                                <button type="button" onClick={handleCloseCreateTest} className="button">
-                                    Close
-                                </button>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
-                {isEditTestOpen && (
-                    <div className="modal-overlay" onClick={handleCloseEditTest}>
-                        <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{maxWidth: 1000, overflowY: 'auto', maxHeight: '90vh'}}>
-                            <TestEditForm tests={tests.map(t => ({...t, id: t._id}))} onUpdate={handleEditTestSubmit} defaultModuleId={id} initialSelectedId={selectedTestIdForForm} />
-                            <div className="modal-buttons" style={{marginTop: 15}}>
-                                <button type="button" onClick={handleCloseEditTest} className="button">
-                                    Close
-                                </button>
+                    {isDeleteTestOpen && (
+                        <div className="modal-overlay" onClick={handleCloseDeleteTest}>
+                            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 1000, overflowY: 'auto', maxHeight: '90vh' }}>
+                                <TestDeleteForm tests={tests.map(t => ({ ...t, id: t._id }))} onConfirm={handleDeleteTestConfirm} initialSelectedId={selectedTestIdForForm} />
+                                <div className="modal-buttons" style={{ marginTop: 15 }}>
+                                    <button type="button" onClick={handleCloseDeleteTest} className="button">
+                                        Close
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
-
-                {isDeleteTestOpen && (
-                    <div className="modal-overlay" onClick={handleCloseDeleteTest}>
-                        <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{maxWidth: 1000, overflowY: 'auto', maxHeight: '90vh'}}>
-                            <TestDeleteForm tests={tests.map(t => ({...t, id: t._id}))} onConfirm={handleDeleteTestConfirm} initialSelectedId={selectedTestIdForForm} />
-                            <div className="modal-buttons" style={{marginTop: 15}}>
-                                <button type="button" onClick={handleCloseDeleteTest} className="button">
-                                    Close
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div >
+                    )}
+                </div >
+            )}
         </>
     );
 }
