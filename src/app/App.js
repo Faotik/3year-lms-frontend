@@ -8,6 +8,7 @@ import Modules from '../pages/Modules';
 import { createContext, useState } from 'react';
 import Submitions from '../pages/Submitions';
 import Test from '../pages/Test';
+import Landing from '../pages/Landing';
 
 //document.documentElement.setAttribute("data-theme", "dark");
 
@@ -27,6 +28,7 @@ function App() {
                 <Route path="/modules/tests/:id" element={<Test />} />
                 {/* <Route path="*" element={<NotFound />} /> */}
                 <Route path="/" element={<Dashboard />} />
+                <Route path="/landing" element={<Landing />} />
             </Routes>
         </>
     );
