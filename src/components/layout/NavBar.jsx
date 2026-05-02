@@ -5,12 +5,20 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../app/App";
 import logout from "../../services/logout";
 
+/**
+ * Navbar component displaying dashboards and navigation links for users 
+ * For admin users displays admin panel 
+ * And logout button for all users
+ */
 function Navbar({ title, description, onOpenSidebar }) {
+    // Hook for navigation between pages
     const navigate = useNavigate();
 
+    // Local state to store the current user from localStorage
     const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")));
 
     return (
+        // Navbar container
         <AppBar
             position="sticky"
             color="inherit"
@@ -23,6 +31,7 @@ function Navbar({ title, description, onOpenSidebar }) {
                 boxSizing: "border-box",
             }}
         >
+            {/* Navbar toolbar */}
             <Toolbar
                 sx={{
                     gap: 1,
@@ -30,6 +39,7 @@ function Navbar({ title, description, onOpenSidebar }) {
                     minWidth: 0,
                 }}
             >
+                {/* Mobile menu button*/}
                 <IconButton
                     edge="start"
                     color="inherit"
@@ -39,6 +49,8 @@ function Navbar({ title, description, onOpenSidebar }) {
                 >
                     <MenuRoundedIcon />
                 </IconButton>
+
+                {/* Title and description section */}
                 <Box sx={{ flexGrow: 1, minWidth: 0, overflow: "hidden" }}>
                     <Typography
                         variant="h6"
@@ -59,19 +71,23 @@ function Navbar({ title, description, onOpenSidebar }) {
                     </Typography>
                 </Box>
 
+                {/* Desktop navigation links*/}
                 <Stack direction="row" spacing={1} sx={{ display: { xs: "none", md: "flex" } }}>
+                    {/*Login button*/}
                     {!user && (
                         <Button color="inherit" component={RouterLink} to="/login">
                             Login
                         </Button>
                     )}
 
+                    {/*Admin panel button*/}
                     {user && user.role == "admin" && (
                         <Button color="inherit" component={RouterLink} to="/admin-panel">
                             Admin panel
                         </Button>
                     )}
 
+                    {/* Dashboard and Modules buttons for authenticated users*/}
                     {user && (
                         <>
                             <Button color="inherit" component={RouterLink} to="/dashboard">
@@ -80,6 +96,7 @@ function Navbar({ title, description, onOpenSidebar }) {
                             <Button color="inherit" component={RouterLink} to="/modules">
                                 Modules
                             </Button>
+                            {/* Logout button triggers the logout service and clears local state */}
                             <Button color="inherit" onClick={async () => {
                                 await logout();
                                 setUser(null);
@@ -93,6 +110,7 @@ function Navbar({ title, description, onOpenSidebar }) {
 
                 </Stack>
 
+                {/* User avatar section*/}
                 <Stack direction="row" spacing={{ xs: 0.5, sm: 1.5 }} alignItems="center" sx={{ flexShrink: 0 }}>
                     <Avatar sx={{ bgcolor: "primary.main", width: { xs: 32, sm: 34 }, height: { xs: 32, sm: 34 } }} />
                 </Stack>

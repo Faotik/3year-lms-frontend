@@ -11,17 +11,29 @@ import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
 import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
 
+/**
+ * Menu items configuration for the sidebar
+ */
 const menuItems = [
     { key: "dashboard", label: "Dashboard", icon: <DashboardRoundedIcon fontSize="small" /> },
     { key: "register", label: "Register users", icon: <PersonAddAltRoundedIcon fontSize="small" /> },
     { key: "manage", label: "Manage users", icon: <ManageAccountsRoundedIcon fontSize="small" /> }
 ];
 
+/**
+ * Fixed width for the sidebar drawer
+ */
 const drawerWidth = 240;
 
+/**
+ * Sidebar component provides naviagation on the admin panel admin users
+ * It displays constant sidebar on desktop and a burger menu on mobile
+ */
 function Sidebar({ activePage, onChangePage, mobileOpen, onMobileClose }) {
+    // Side-bar sections for desktop and mobile
     const drawerContent = (
         <>
+            {/* Admin Panel Information */}
             <Box sx={{ px: 1.5, py: 1, mb: 2 }}>
                 <Typography variant="h6" fontWeight={700}>
                     LearnLite Admin
@@ -37,6 +49,7 @@ function Sidebar({ activePage, onChangePage, mobileOpen, onMobileClose }) {
                 />
             </Box>
 
+            {/* Navigation list */}
             <List sx={{ px: 0.5 }}>
                 {menuItems.map((item) => (
                     <ListItemButton
@@ -44,6 +57,7 @@ function Sidebar({ activePage, onChangePage, mobileOpen, onMobileClose }) {
                         selected={activePage === item.key}
                         onClick={() => {
                             onChangePage(item.key);
+                            // Close mobile drawer after selection
                             if (onMobileClose) onMobileClose();
                         }}
                         sx={{
@@ -62,6 +76,7 @@ function Sidebar({ activePage, onChangePage, mobileOpen, onMobileClose }) {
 
     return (
         <>
+            {/* Burger menu for mobile screens */}
             <Drawer
                 variant="temporary"
                 open={mobileOpen}
@@ -82,6 +97,7 @@ function Sidebar({ activePage, onChangePage, mobileOpen, onMobileClose }) {
                 {drawerContent}
             </Drawer>
 
+            {/* Constant sidebar for desktop */}
             <Drawer
                 variant="permanent"
                 sx={{

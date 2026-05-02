@@ -1,25 +1,34 @@
-import {Alert, Button, Card, CardContent, Divider, Grid, MenuItem, Stack, TextField, Typography} from "@mui/material";
+import { Alert, Button, Card, CardContent, Divider, Grid, MenuItem, Stack, TextField, Typography } from "@mui/material";
 import PropTypes from "prop-types";
-import {useEffect, useMemo, useState} from "react";
-import {createTestDraft, toISOFromLocalDatetime, toLocalDatetimeValue} from "./testFormUtils";
+import { useEffect, useMemo, useState } from "react";
+import { createTestDraft, toISOFromLocalDatetime, toLocalDatetimeValue } from "./testFormUtils";
 
-function TestEditForm({tests, onUpdate, defaultModuleId, initialSelectedId}) {
+/**
+ * TestEditForm component provides feature to edit a test.
+ */
+function TestEditForm({ tests, onUpdate, defaultModuleId, initialSelectedId }) {
+
+    //states for selected test ID, form data, success and error messages
     const [selectedId, setSelectedId] = useState(initialSelectedId || "");
-    const [form, setForm] = useState(() => createTestDraft({moduleId: defaultModuleId || ""}));
+    const [form, setForm] = useState(() => createTestDraft({ moduleId: defaultModuleId || "" }));
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
 
+    // Hook to find the selected test object from the list of tests based on the selected ID
     const selectedTest = useMemo(
         () => tests.find((t) => String(t.id) === String(selectedId)) || null,
         [tests, selectedId]
     );
 
+    // Hook to populate the form fields when a test is selected
     useEffect(() => {
+        // reset form if no test is selected
         if (!selectedTest) {
-            setForm(createTestDraft({moduleId: defaultModuleId || ""}));
+            setForm(createTestDraft({ moduleId: defaultModuleId || "" }));
             return;
         }
 
+        // populate form with selected test data
         setForm({
             id: selectedTest.id,
             title: selectedTest.title || "",
@@ -28,14 +37,16 @@ function TestEditForm({tests, onUpdate, defaultModuleId, initialSelectedId}) {
             deadline: toLocalDatetimeValue(selectedTest.deadline),
             questions: Array.isArray(selectedTest.questions) && selectedTest.questions.length
                 ? selectedTest.questions
-                : createTestDraft({moduleId: defaultModuleId || ""}).questions
+                : createTestDraft({ moduleId: defaultModuleId || "" }).questions
         });
     }, [selectedTest, defaultModuleId]);
 
+    // Updates a specific field in the form state
     const setField = (name, value) => {
-        setForm((prev) => ({...prev, [name]: value}));
+        setForm((prev) => ({ ...prev, [name]: value }));
     };
 
+    // Validates and submits the updated test data
     const handleSubmit = (event) => {
         event.preventDefault();
         setSuccess("");
@@ -45,6 +56,7 @@ function TestEditForm({tests, onUpdate, defaultModuleId, initialSelectedId}) {
             return setError("Pick a test to edit.");
         }
 
+        // Payload by combining original test data with form updates
         const payload = {
             ...selectedTest,
             title: form.title.trim(),
@@ -54,6 +66,7 @@ function TestEditForm({tests, onUpdate, defaultModuleId, initialSelectedId}) {
             questions: Array.isArray(form.questions) ? form.questions : []
         };
 
+        // Validation for required fields
         if (!payload.title) {
             return setError("Title is required.");
         }
@@ -64,14 +77,16 @@ function TestEditForm({tests, onUpdate, defaultModuleId, initialSelectedId}) {
             return setError("Deadline is required.");
         }
 
+        // send the updated test to the system and show a done message
         onUpdate(payload);
-        setSuccess("Test updated successfully.");
+        setSuccess("Done!");
     };
 
     return (
-        <Card variant="outlined" sx={{borderColor: "divider", maxWidth: 980}}>
+        <Card variant="outlined" sx={{ borderColor: "divider", maxWidth: 980 }}>
             <CardContent>
                 <Stack spacing={2.5}>
+                    {/* Header section */}
                     <div>
                         <Typography variant="h5" fontWeight={700}>
                             Edit test
@@ -81,12 +96,15 @@ function TestEditForm({tests, onUpdate, defaultModuleId, initialSelectedId}) {
                         </Typography>
                     </div>
 
+                    {/* Success and Error Alerts */}
                     {success && <Alert severity="success">{success}</Alert>}
                     {error && <Alert severity="error">{error}</Alert>}
 
+                    {/* Test editing form */}
                     <form onSubmit={handleSubmit}>
                         <Grid container spacing={2}>
-                            <Grid size={{xs: 12}}>
+                            <Grid size={{ xs: 12 }}>
+                                {/* Dropdown to select a test to edit */}
                                 <TextField
                                     select
                                     fullWidth
@@ -99,6 +117,7 @@ function TestEditForm({tests, onUpdate, defaultModuleId, initialSelectedId}) {
                                             : "No tests available yet. Create one first."
                                     }
                                 >
+                                    {/* Test options */}
                                     {tests.map((t) => (
                                         <MenuItem key={t.id} value={t.id}>
                                             {t.title || "(Untitled)"} • {t.moduleId || "no module"}
@@ -107,11 +126,12 @@ function TestEditForm({tests, onUpdate, defaultModuleId, initialSelectedId}) {
                                 </TextField>
                             </Grid>
 
-                            <Grid size={{xs: 12}}>
-                                <Divider sx={{my: 0.5}}/>
+                            <Grid size={{ xs: 12 }}>
+                                <Divider sx={{ my: 0.5 }} />
                             </Grid>
 
-                            <Grid size={{xs: 12, md: 6}}>
+                            {/* Editable Form Fields (Disabled if no test is selected) */}
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     fullWidth
                                     required
@@ -122,7 +142,8 @@ function TestEditForm({tests, onUpdate, defaultModuleId, initialSelectedId}) {
                                     disabled={!selectedTest}
                                 />
                             </Grid>
-                            <Grid size={{xs: 12, md: 6}}>
+                            {/* Module ID field */}
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     fullWidth
                                     required
@@ -133,7 +154,8 @@ function TestEditForm({tests, onUpdate, defaultModuleId, initialSelectedId}) {
                                     disabled={!selectedTest}
                                 />
                             </Grid>
-                            <Grid size={{xs: 12}}>
+                            {/* Description field */}
+                            <Grid size={{ xs: 12 }}>
                                 <TextField
                                     fullWidth
                                     name="description"
@@ -143,21 +165,23 @@ function TestEditForm({tests, onUpdate, defaultModuleId, initialSelectedId}) {
                                     disabled={!selectedTest}
                                 />
                             </Grid>
-                            <Grid size={{xs: 12, md: 6}}>
+                            {/* Deadline field */}
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     fullWidth
                                     required
                                     type="datetime-local"
                                     name="deadline"
                                     label="Deadline"
-                                    InputLabelProps={{shrink: true}}
+                                    InputLabelProps={{ shrink: true }}
                                     value={form.deadline}
                                     onChange={(e) => setField("deadline", e.target.value)}
                                     disabled={!selectedTest}
                                 />
                             </Grid>
 
-                            <Grid size={{xs: 12}}>
+                            {/* Submit Button */}
+                            <Grid size={{ xs: 12 }}>
                                 <Button
                                     type="submit"
                                     variant="contained"
@@ -174,7 +198,7 @@ function TestEditForm({tests, onUpdate, defaultModuleId, initialSelectedId}) {
         </Card>
     );
 }
-
+// PropTypes for TestEditForm
 TestEditForm.propTypes = {
     tests: PropTypes.arrayOf(
         PropTypes.shape({

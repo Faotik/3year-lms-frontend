@@ -12,6 +12,9 @@ import {
 import PropTypes from "prop-types";
 import { useState } from "react";
 
+/**
+ * Initial state for the user registration form.
+ */
 const initialForm = {
     name: "",
     email: "",
@@ -20,15 +23,26 @@ const initialForm = {
     password: ""
 };
 
+/**
+ * UserRegistrationForm component for admin users to register a new user.
+ * It includes name, email, role, module assignment, and password fields.
+ */
 function UserRegistrationForm({ onRegister, modules = [] }) {
+    // Local state for the form data and success message
     const [form, setForm] = useState(initialForm);
     const [success, setSuccess] = useState("");
 
+    /**
+     * Updates form data when input fields change.
+     */
     const handleChange = (event) => {
         const { name, value } = event.target;
         setForm((prev) => ({ ...prev, [name]: value }));
     };
 
+    /**
+     * Form submission handler.
+     */
     const handleSubmit = (event) => {
         event.preventDefault();
         onRegister(form);
@@ -40,6 +54,7 @@ function UserRegistrationForm({ onRegister, modules = [] }) {
         <Card variant="outlined" sx={{ borderColor: "divider", maxWidth: 860 }}>
             <CardContent>
                 <Stack spacing={2.5}>
+                    {/* Header */}
                     <div>
                         <Typography variant="h5" fontWeight={700}>
                             Register user
@@ -49,10 +64,12 @@ function UserRegistrationForm({ onRegister, modules = [] }) {
                         </Typography>
                     </div>
 
+                    {/* Success alert */}
                     {success && <Alert severity="success">{success}</Alert>}
 
                     <form onSubmit={handleSubmit}>
                         <Grid container spacing={2}>
+                            {/* Input field for name */}
                             <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     fullWidth
@@ -63,6 +80,7 @@ function UserRegistrationForm({ onRegister, modules = [] }) {
                                     onChange={handleChange}
                                 />
                             </Grid>
+                            {/* Input field for email */}
                             <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     fullWidth
@@ -74,6 +92,7 @@ function UserRegistrationForm({ onRegister, modules = [] }) {
                                     onChange={handleChange}
                                 />
                             </Grid>
+                            {/* Input field for role */}
                             <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     select
@@ -84,11 +103,13 @@ function UserRegistrationForm({ onRegister, modules = [] }) {
                                     value={form.role}
                                     onChange={handleChange}
                                 >
+                                    {/* List of roles to choose from */}
                                     <MenuItem value="student">Student</MenuItem>
                                     <MenuItem value="teacher">Teacher</MenuItem>
                                     <MenuItem value="admin">Admin</MenuItem>
                                 </TextField>
                             </Grid>
+                            {/* Input field for module */}
                             <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     select
@@ -99,13 +120,15 @@ function UserRegistrationForm({ onRegister, modules = [] }) {
                                     value={form.module}
                                     onChange={handleChange}
                                 >
-                                {modules.map((module) => (
-                                    <MenuItem key={module._id} value={module._id}>
-                                        {module.title}
-                                    </MenuItem>
-                                ))}
+                                    {/* List of modules to choose from */}
+                                    {modules.map((module) => (
+                                        <MenuItem key={module._id} value={module._id}>
+                                            {module.title}
+                                        </MenuItem>
+                                    ))}
                                 </TextField>
                             </Grid>
+                            {/* Input field for password */}
                             <Grid size={{ xs: 12 }}>
                                 <TextField
                                     fullWidth
@@ -118,6 +141,7 @@ function UserRegistrationForm({ onRegister, modules = [] }) {
                                 />
                             </Grid>
                             <Grid size={12}>
+                                {/* register user button */}
                                 <Button type="submit" variant="contained" size="large">
                                     Register user
                                 </Button>
@@ -130,6 +154,7 @@ function UserRegistrationForm({ onRegister, modules = [] }) {
     );
 }
 
+// Props Validation
 UserRegistrationForm.propTypes = {
     onRegister: PropTypes.func.isRequired,
     modules: PropTypes.array
