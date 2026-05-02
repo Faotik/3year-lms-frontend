@@ -18,17 +18,15 @@ function App() {
     return (
         <>
             <Routes>
-                {/* <Route path="/about" element={<About />} /> */}
                 <Route path="/login" element={<Login />} />
-                {/* <Route path="/profile" element={<Profile />} /> */}
                 <Route path="/modules" element={<Modules />} />
                 <Route path="/modules/:id" element={<Module />} />
                 <Route path="/admin-panel" element={<AdminPanel />} />
                 <Route path="/modules/assignments/:id/submitions" element={<Submitions />} />
                 <Route path="/modules/tests/:id" element={<Test />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/" element={<Landing />} />
                 {/* <Route path="*" element={<NotFound />} /> */}
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/landing" element={<Landing />} />
             </Routes>
         </>
     );

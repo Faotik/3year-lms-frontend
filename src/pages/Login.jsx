@@ -30,7 +30,7 @@ export default function Login() {
                     const data = await userResponse.json();
 
                     localStorage.setItem("user", JSON.stringify({ id: data.id, role: data.role }));
-                    navigate("/");
+                    navigate("/dashboard");
                 }
                 else {
                     setErrorPassword("Unable to connect to the server. Please try again later.");

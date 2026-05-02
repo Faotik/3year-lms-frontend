@@ -74,7 +74,7 @@ function Navbar({ title, description, onOpenSidebar }) {
 
                     {user && (
                         <>
-                            <Button color="inherit" component={RouterLink} to="/">
+                            <Button color="inherit" component={RouterLink} to="/dashboard">
                                 Dashboard
                             </Button>
                             <Button color="inherit" component={RouterLink} to="/modules">
