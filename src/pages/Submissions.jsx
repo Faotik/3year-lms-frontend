@@ -5,26 +5,26 @@ import { useNavigate, useParams } from "react-router-dom";
 import getSubmission from "../services/getSubmission";
 import checkAuth from "../services/checkAuth";
 
-export default function Submitions() {
+export default function Submissions() {
     const navigate = useNavigate();
 
     const { id } = useParams();
-    const [submitions, setSubmitions] = useState([]);
+    const [submissions, setsubmissions] = useState([]);
 
     useEffect(() => {
         if (!checkAuth()) {
             navigate("/login");
         }
 
-        fetchSubmitions();
+        fetchsubmissions();
     }, []);
 
-    const fetchSubmitions = async () => {
+    const fetchsubmissions = async () => {
         const response = await getSubmission(id);
 
         if (response.ok) {
             const data = await response.json();
-            setSubmitions(data);
+            setsubmissions(data);
         }
     };
 
@@ -42,14 +42,14 @@ export default function Submitions() {
             <div className="page-container">
                 <div className="module-container">
                     <div className="list">
-                        {submitions.length > 0 ? (
-                            submitions.map((submition) => (
-                                <div className="card" key={submition._id}>
+                        {submissions.length > 0 ? (
+                            submissions.map((submission) => (
+                                <div className="card" key={submission._id}>
                                     <div className="card-desc">
-                                        <h3>{submition.studentId.name}</h3>
-                                        <p><strong>Submitted on:</strong> {formatDate(submition.createdAt)}</p>
+                                        <h3>{submission.studentId.name}</h3>
+                                        <p><strong>Submitted on:</strong> {formatDate(submission.createdAt)}</p>
                                         <hr />
-                                        <p className="submission-content">{submition.content}</p>
+                                        <p className="submission-content">{submission.content}</p>
                                     </div>
                                     <div className="card-score">
                                         Status: Submitted

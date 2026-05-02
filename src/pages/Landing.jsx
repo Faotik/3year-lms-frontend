@@ -156,8 +156,8 @@ export default function Landing() {
             <footer className="lp-footer" id="contact">
                 <div className="lp-footer-grid">
                     <div className="footer-brand">
-                        <h3>Nametemplate</h3>
-                        <p>A lightweight LMS for students and staff. Built as a final-year group project.</p>
+                        <h3>LearnLite</h3>
+                        <p>A lightweight LMS for students and staff. Built as a third-year group project.</p>
                     </div>
                     <div className="footer-col">
                         <h4>Platform</h4>
@@ -167,7 +167,7 @@ export default function Landing() {
                     </div>
                     <div className="footer-col">
                         <h4>Contact us</h4>
-                        <p>info@nametemplate.ie</p>
+                        <p>info@learnlite.ie</p>
                         <p>+353 1 234 5678</p>
                         <p>Dublin, Ireland</p>
                     </div>
@@ -179,7 +179,7 @@ export default function Landing() {
                     </div>
                 </div>
                 <div className="lp-footer-bottom">
-                    <p>© 2026 Nametemplate. All rights reserved.</p>
+                    <p>© 2026 LearnLite. All rights reserved.</p>
                     <div className="footer-bottom-links">
                         <a href="#">Privacy</a>
                         <a href="#">Terms</a>

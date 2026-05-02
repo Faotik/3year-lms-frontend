@@ -294,7 +294,7 @@ export default function Module() {
                                         <p>Due: {new Date(test.deadline).toLocaleDateString()}</p>
                                     </div>
                                     {test.submissions.length > 0 && user.role === "student" && (
-                                        <div className="card-score">{getScore(test.submissions)}</div>
+                                        <div className="card-score">Score: {getScore(test.submissions)}</div>
                                     )}
                                     {test.submissions.length === 0 && user.role === "student" && (
                                         <button
