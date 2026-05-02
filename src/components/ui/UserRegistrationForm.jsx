@@ -16,7 +16,7 @@ const initialForm = {
     name: "",
     email: "",
     role: "student",
-    course: "",
+    module: "",
     password: ""
 };
 
@@ -94,9 +94,9 @@ function UserRegistrationForm({ onRegister, modules = [] }) {
                                     select
                                     fullWidth
                                     required
-                                    name="course"
-                                    label="Primary course"
-                                    value={form.course}
+                                    name="module"
+                                    label="Primary module"
+                                    value={form.module}
                                     onChange={handleChange}
                                 >
                                 {modules.map((module) => (

@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import getUsers from "../services/getUsers";
 import registerUser from "../services/registerUser";
 import getModules from "../services/getModules";
+import updateModule from "../services/updateModule";
 import getAdminStats from "../services/getAdminStats";
 import getGraphStats from "../services/getGraphStats";
 import dayjs from "dayjs";
@@ -92,11 +93,10 @@ function AdminPanel() {
     const enrichedUsers = useMemo(() => {
         return users.map(user => {
             const userId = user.id || user._id || user.ID;
-            const userCourses = modules
-                .filter(m => m.users && m.users.includes(userId))
-                .map(m => m.title)
-                .join(", ");
-            return { ...user, course: userCourses || "None" };
+            const userAssociatedModules = modules.filter(m => m.users && m.users.includes(userId));
+            const userModules = userAssociatedModules.map(m => m.title).join(", ");
+            const userModuleId = userAssociatedModules.length > 0 ? (userAssociatedModules[0]._id || userAssociatedModules[0].id) : "";
+            return { ...user, module: userModules || "None", moduleId: userModuleId };
         });
     }, [users, modules]);
 
@@ -104,7 +104,7 @@ function AdminPanel() {
         if (platformStats) {
             return [
                 { title: "Total users", value: String(platformStats.users || 0), interval: "Platform total", trend: "up" },
-                { title: "Modules", value: String(platformStats.modules || 0), interval: "Active courses", trend: "up" },
+                { title: "Modules", value: String(platformStats.modules || 0), interval: "Active modules", trend: "up" },
                 { title: "Assignments", value: String(platformStats.assignments || 0), interval: "Current tasks", trend: "neutral" },
                 { title: "Submissions", value: String(platformStats.submissions || 0), interval: "Student work", trend: "up" }
             ];
@@ -120,7 +120,7 @@ function AdminPanel() {
         return [
             { title: "Total users", value: String(totalUsers), interval: "Platform total", trend: "up" },
             { title: "Students", value: String(students), interval: "Active learners", trend: "up" },
-            { title: "Teachers", value: String(teachers), interval: "Course mentors", trend: "neutral" },
+            { title: "Teachers", value: String(teachers), interval: "Module mentors", trend: "neutral" },
             { title: "Avg progress", value: `${Math.round(averageProgress)}%`, interval: "All users", trend: "up" }
         ];
     }, [users, platformStats]);
@@ -168,7 +168,31 @@ function AdminPanel() {
         try {
             const response = await registerUser(form);
             if (response.ok) {
-                await fetchUsers();
+                // Fetch fresh users to find the new user's ID by email safely
+                const usersRes = await getUsers();
+                if (usersRes.ok) {
+                    const allUsers = await usersRes.json();
+                    const newUser = allUsers.find(u => u.email === form.email);
+                    const newUserId = newUser ? (newUser.id || newUser._id || newUser.ID) : null;
+
+                    // Manually sync module association if a module was selected
+                    if (form.module && newUserId) {
+                        // Fetch latest modules to ensure we have the current users array
+                        const modulesRes = await getModules();
+                        if (modulesRes.ok) {
+                            const allModules = await modulesRes.json();
+                            const targetModule = allModules.find(m => (m._id || m.id) === form.module);
+                            if (targetModule) {
+                                const currentUsers = targetModule.users || [];
+                                if (!currentUsers.includes(newUserId)) {
+                                    await updateModule(form.module, { users: [...currentUsers, newUserId] });
+                                }
+                            }
+                        }
+                    }
+                }
+
+                await Promise.all([fetchUsers(), fetchModules()]);
                 setActivePage("dashboard");
             } else {
                 console.error("Registration failed");
@@ -180,6 +204,7 @@ function AdminPanel() {
 
     const handleUserUpdated = () => {
         fetchUsers();
+        fetchModules();
     };
 
     const handleUserDeleted = (userId) => {
@@ -316,6 +341,7 @@ function AdminPanel() {
             return (
                 <UserManagement 
                     users={enrichedUsers} 
+                    modules={modules}
                     onUserUpdated={handleUserUpdated} 
                     onUserDeleted={handleUserDeleted} 
                 />

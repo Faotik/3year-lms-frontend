@@ -14,7 +14,7 @@ function StudentsTable({ rows }) {
                 <TableHead>
                     <TableRow>
                         <TableCell>Student</TableCell>
-                        <TableCell>Course</TableCell>
+                        <TableCell>Module</TableCell>
                         <TableCell>Role</TableCell>
                         <TableCell>ID</TableCell>
                     </TableRow>
@@ -24,7 +24,7 @@ function StudentsTable({ rows }) {
                     {rows.map((row) => (
                         <TableRow key={row.email} hover>
                             <TableCell>{row.name}</TableCell>
-                            <TableCell>{row.course}</TableCell>
+                            <TableCell>{row.module}</TableCell>
                             <TableCell>
                                 <Chip size="small" label={row.role} />
                             </TableCell>
@@ -40,7 +40,7 @@ function StudentsTable({ rows }) {
 StudentsTable.propTypes = {
     rows: PropTypes.arrayOf(
         PropTypes.shape({
-            course: PropTypes.string.isRequired,
+            module: PropTypes.string.isRequired,
             email: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired,
             progress: PropTypes.number.isRequired,

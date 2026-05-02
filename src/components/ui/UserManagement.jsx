@@ -25,14 +25,15 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import updateUser from "../../services/updateUser";
 import deleteUser from "../../services/deleteUser";
+import updateModule from "../../services/updateModule";
 
-function UserManagement({ users, onUserUpdated, onUserDeleted }) {
+function UserManagement({ users, modules = [], onUserUpdated, onUserDeleted }) {
     const [editingUser, setEditingUser] = useState(null);
     const [editForm, setEditForm] = useState({
         name: "",
         email: "",
         role: "",
-        course: "",
+        module: "",
         password: ""
     });
     const [error, setError] = useState("");
@@ -45,7 +46,7 @@ function UserManagement({ users, onUserUpdated, onUserDeleted }) {
             name: user.name || "",
             email: user.email || "",
             role: user.role || "student",
-            course: user.course || "",
+            module: user.moduleId || "",
             password: "" // Keep password empty by default
         });
         setOpenDialog(true);
@@ -84,12 +85,39 @@ function UserManagement({ users, onUserUpdated, onUserDeleted }) {
         setSuccess("");
         
         try {
+            const userId = editingUser.id || editingUser._id || editingUser.ID;
             const payload = { ...editForm };
             if (!payload.password) delete payload.password; // Don't send empty password
 
-            const response = await updateUser(editingUser.id || editingUser._id || editingUser.ID, payload);
+            const response = await updateUser(userId, payload);
             if (response.ok) {
                 const updatedUser = await response.json();
+                
+                // Manually sync module association if it changed
+                const oldModuleId = editingUser.moduleId;
+                const newModuleId = editForm.module;
+
+                if (oldModuleId !== newModuleId) {
+                    // 1. Remove from old module
+                    if (oldModuleId) {
+                        const oldModule = modules.find(m => (m._id || m.id) === oldModuleId);
+                        if (oldModule) {
+                            const updatedUsers = (oldModule.users || []).filter(id => id !== userId);
+                            await updateModule(oldModuleId, { users: updatedUsers });
+                        }
+                    }
+                    // 2. Add to new module
+                    if (newModuleId) {
+                        const newModule = modules.find(m => (m._id || m.id) === newModuleId);
+                        if (newModule) {
+                            const currentUsers = newModule.users || [];
+                            if (!currentUsers.includes(userId)) {
+                                await updateModule(newModuleId, { users: [...currentUsers, userId] });
+                            }
+                        }
+                    }
+                }
+
                 onUserUpdated(updatedUser);
                 setSuccess("User updated successfully!");
                 setTimeout(() => {
@@ -181,12 +209,20 @@ function UserManagement({ users, onUserUpdated, onUserDeleted }) {
                             <MenuItem value="admin">Admin</MenuItem>
                         </TextField>
                         <TextField
-                            label="Course"
-                            name="course"
-                            value={editForm.course}
+                            select
+                            label="Module"
+                            name="module"
+                            value={editForm.module}
                             onChange={handleEditFormChange}
                             fullWidth
-                        />
+                        >
+                            <MenuItem value="">None</MenuItem>
+                            {modules.map((module) => (
+                                <MenuItem key={module._id || module.id} value={module._id || module.id}>
+                                    {module.title}
+                                </MenuItem>
+                            ))}
+                        </TextField>
                         <TextField
                             label="New Password"
                             name="password"
@@ -209,6 +245,7 @@ function UserManagement({ users, onUserUpdated, onUserDeleted }) {
 
 UserManagement.propTypes = {
     users: PropTypes.array.isRequired,
+    modules: PropTypes.array,
     onUserUpdated: PropTypes.func.isRequired,
     onUserDeleted: PropTypes.func.isRequired
 };
