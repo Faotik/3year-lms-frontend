@@ -64,7 +64,6 @@ export default function Landing() {
                 </ul>
                 <div className="lp-nav-right">
                     <button className="btn-ghost" onClick={() => navigate("/login")}>Log in</button>
-                    <button className="btn-solid" onClick={() => navigate("/login")}>Register</button>
                 </div>
             </nav>
 
@@ -122,7 +121,7 @@ export default function Landing() {
             <section className="lp-about" id="about">
                 <h2>Built for students, by students</h2>
                 <p>
-                    Nametemplate is a lightweight learning management system designed to keep everything simple.
+                    LearnLite is a lightweight learning management system designed to keep everything simple.
                     No clutter, no confusion — just your modules and what needs doing.
                 </p>
             </section>
