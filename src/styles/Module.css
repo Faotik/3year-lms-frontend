@@ -9,7 +9,7 @@
 .module-container {
     max-width: 800px;
     width: 100%;
-    background: white;
+    background: var(--background);
     min-height: calc(100vh - 65px);
     border-radius: 10px 10px 0px 0px;
 }
@@ -23,7 +23,7 @@
 .tab {
     background: rgb(246, 158, 35);
     border-radius: 10px 10px 0px 0px;
-    border: solid #ccc;
+    border: solid var(--form-input-border);
     border-width: 2px 2px 0px 2px;
     padding: 10px;
     cursor: pointer;
@@ -42,9 +42,9 @@
 }
 
 .card {
-    background: rgb(245, 245, 245);
+    background: var(--form-background);
     border-radius: 10px;
-    border: 3px solid #a4a4a4;
+    border: 3px solid var(--form-input-border);
     padding: 18px;
     display: flex;
     justify-content: space-between;
@@ -63,8 +63,8 @@
 }
 
 .button {
-    background: #f4f4f4;
-    border: 1px solid #ddd;
+    background: var(--form-input-background);
+    border: 1px solid var(--form-input-border);
     padding: 10px 20px;
     border-radius: 6px;
     cursor: pointer;
@@ -102,7 +102,7 @@
 }
 
 .modal-content {
-    background: white;
+    background: var(--form-background);
     padding: 32px;
     border-radius: 12px;
     width: 100%;
@@ -114,7 +114,7 @@
     width: 100%;
     height: 150px;
     padding: 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--form-input-border);
     border-radius: 8px;
     resize: vertical;
     font-family: inherit;
@@ -144,6 +144,8 @@
 .edit-form input,
 .edit-form textarea {
     padding: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--form-input-border);
     border-radius: 4px;
+    background: var(--form-input-background);
+    color: var(--text-color);
 }

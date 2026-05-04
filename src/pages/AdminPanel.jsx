@@ -1,4 +1,4 @@
-import { Box, createTheme, CssBaseline, Grid, Stack, ThemeProvider, Typography } from "@mui/material";
+import { Box, createTheme, CssBaseline, Grid, Stack, ThemeProvider, Typography, useTheme } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useEffect, useMemo, useState } from "react";
@@ -29,8 +29,8 @@ function AdminPanel() {
         }
     }, [navigate]);
 
-    //const themeMode = "dark"; 
-    const themeMode = "light";
+    const globalTheme = useTheme();
+    const themeMode = globalTheme.palette.mode;
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const [activePage, setActivePage] = useState("dashboard");
 

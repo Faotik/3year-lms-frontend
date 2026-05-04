@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Landing.css";
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { ColorModeContext } from "../context/ThemeContext";
+import { useContext } from "react";
+import { useTheme, IconButton } from "@mui/material";
 import books from "../assets/books.jpg";
 import campus from "../assets/campus.jpg";
 import lecture from "../assets/lecture.jpg";
@@ -43,6 +48,9 @@ export default function Landing() {
     const navigate = useNavigate();
     const [slideIndex, setSlideIndex] = useState(0);
 
+    const theme = useTheme();
+    const colorMode = useContext(ColorModeContext);
+
     useEffect(() => {
         if (SLIDES.length < 2) return;
         const interval = setInterval(() => {
@@ -63,6 +71,9 @@ export default function Landing() {
                     <li><a href="#contact">Contact</a></li>
                 </ul>
                 <div className="lp-nav-right">
+                    <IconButton onClick={colorMode.toggleColorMode} color="inherit" title="Toggle theme">
+                        {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+                    </IconButton>
                     <button className="btn-ghost" onClick={() => navigate("/login")}>Log in</button>
                 </div>
             </nav>
