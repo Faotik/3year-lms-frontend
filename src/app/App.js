@@ -10,6 +10,8 @@ import Test from '../pages/Test';
 import Landing from '../pages/Landing';
 import TestSubmissions from '../pages/TestSubmissions';
 import { useState } from 'react';
+import { ColorModeProvider } from '../context/ThemeContext';
+import { CssBaseline } from '@mui/material';
 
 //document.documentElement.setAttribute("data-theme", "dark");
 
@@ -17,7 +19,8 @@ function App() {
     const [user, setUser] = useState(null);
 
     return (
-        <>
+        <ColorModeProvider>
+            <CssBaseline />
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/modules" element={<Modules />} />
@@ -30,7 +33,7 @@ function App() {
                 <Route path="/" element={<Landing />} />
                 {/* <Route path="*" element={<NotFound />} /> */}
             </Routes>
-        </>
+        </ColorModeProvider>
     );
 }
 

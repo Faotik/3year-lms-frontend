@@ -29,7 +29,7 @@ export default function Login() {
                 if (userResponse.ok) {
                     const data = await userResponse.json();
 
-                    localStorage.setItem("user", JSON.stringify({ id: data.id, role: data.role }));
+                    localStorage.setItem("user", JSON.stringify(data));
                     navigate("/dashboard");
                 }
                 else {

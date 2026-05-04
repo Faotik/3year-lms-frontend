@@ -4,6 +4,10 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../app/App";
 import logout from "../../services/logout";
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { ColorModeContext } from "../../context/ThemeContext";
+import { useTheme } from "@mui/material";
 
 /**
  * Navbar component displaying dashboards and navigation links for users 
@@ -16,6 +20,10 @@ function Navbar({ title, description, onOpenSidebar }) {
 
     // Local state to store the current user from localStorage
     const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")));
+
+    // Access the theme and color mode context
+    const theme = useTheme();
+    const colorMode = useContext(ColorModeContext);
 
     return (
         // Navbar container
@@ -110,8 +118,11 @@ function Navbar({ title, description, onOpenSidebar }) {
 
                 </Stack>
 
-                {/* User avatar section*/}
+                {/* User avatar section and theme toggle */}
                 <Stack direction="row" spacing={{ xs: 0.5, sm: 1.5 }} alignItems="center" sx={{ flexShrink: 0 }}>
+                    <IconButton onClick={colorMode.toggleColorMode} color="inherit" title="Toggle theme">
+                        {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+                    </IconButton>
                     <Avatar sx={{ bgcolor: "primary.main", width: { xs: 32, sm: 34 }, height: { xs: 32, sm: 34 } }} />
                 </Stack>
             </Toolbar>
