@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/layout/NavBar";
+import checkAuth from "../services/checkAuth";
+import getUser from "../services/getUser";
+import getModules from "../services/getModules";
+import getUpcoming from "../services/getUpcoming";
 import "../styles/Dashboard.css";
 
 export default function Dashboard() {
@@ -12,18 +16,17 @@ export default function Dashboard() {
     const [error, setError] = useState("");
 
     useEffect(() => {
+        if (!checkAuth()) {
+            navigate("/login");
+            return;
+        }
+
         async function loadData() {
             try {
-                const meRes = await fetch("/api/auth/me", { credentials: "include" });
-                if (!meRes.ok) {
-                    navigate("/login");
-                    return;
-                }
-                const sessionUser = await meRes.json();
                 const [userRes, modulesRes, upcomingRes] = await Promise.all([
-                    fetch(`/api/users/${sessionUser.id}`, { credentials: "include" }),
-                    fetch("/api/modules", { credentials: "include" }),
-                    fetch("/api/calendar/upcoming", { credentials: "include" }),
+                    getUser(),
+                    getModules(),
+                    getUpcoming(),
                 ]);
 
                 if (userRes.ok) setUser(await userRes.json());
@@ -31,7 +34,7 @@ export default function Dashboard() {
                 if (upcomingRes.ok) setUpcoming(await upcomingRes.json());
             } catch (err) {
                 console.error(err);
-                // setError("Failed to load page. Please refresh.");
+                setError("Failed to load page. Please refresh.");
             }
         }
 
@@ -48,8 +51,7 @@ export default function Dashboard() {
 
     return (
         <>
-            <NavBar title={"Your Dashboard"}
-                description={"Track your task progress"} />
+            <NavBar title="Your Dashboard" description="Track your task progress" />
             <div className="page-container">
 
                 {error && <p className="error-message">{error}</p>}
@@ -96,7 +98,7 @@ export default function Dashboard() {
                                     <p className="empty-note">No upcoming deadlines 🎉</p>
                                 )}
                                 {upcoming.map((event) => (
-                                    <div key={event.id} className="deadline-card">
+                                    <div key={event._id} className="deadline-card">
                                         <div className="deadline-info">
                                             <h4>{event.title}</h4>
                                             {event.description && <p>{event.description}</p>}
