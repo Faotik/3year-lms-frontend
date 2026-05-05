@@ -55,6 +55,8 @@ export default function Module() {
     const [isDeleteTestOpen, setIsDeleteTestOpen] = useState(false);
     const [selectedTestIdForForm, setSelectedTestIdForForm] = useState("");
 
+    const [file, setFile] = useState(null);
+
     const fetchAssignments = async () => {
         const response = await getAssignments(id);
 
@@ -111,9 +113,18 @@ export default function Module() {
         setIsSubmissionOpen(false);
     };
 
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await submitAssignment(selectedAssignment, submissionText);
+
+        const formData = new FormData();
+        formData.append('content', submissionText);
+        formData.append('attachment', file);
+
+        await submitAssignment(selectedAssignment, formData);
         await fetchAssignments();
 
         handleCloseSubmission();
@@ -354,9 +365,9 @@ export default function Module() {
                                     <textarea
                                         value={submissionText}
                                         onChange={(e) => setSubmissionText(e.target.value)}
-                                        placeholder="Type your submission here..."
-                                        required
+                                        placeholder="Type description here..."
                                     />
+                                    <input type="file" required onChange={handleFileChange} />
                                     <div className="popup-buttons">
                                         <button type="button" onClick={handleCloseSubmission} className="button">
                                             Cancel

@@ -4,6 +4,7 @@ import "../styles/Module.css";
 import { useNavigate, useParams } from "react-router-dom";
 import getSubmission from "../services/getSubmission";
 import checkAuth from "../services/checkAuth";
+import getAttachment from "../services/getAttachment";
 
 export default function Submissions() {
     const navigate = useNavigate();
@@ -36,6 +37,18 @@ export default function Submissions() {
         return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
+
+    const handleDownload = async (id, filename) => {
+        const data = await getAttachment(id);
+        const blob = await data.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(url);
+    }
+
     return (
         <>
             <NavBar title="Submissions" />
@@ -50,6 +63,7 @@ export default function Submissions() {
                                         <p><strong>Submitted on:</strong> {formatDate(submission.createdAt)}</p>
                                         <hr />
                                         <p className="submission-content">{submission.content}</p>
+                                        <button className="attachment" onClick={() => handleDownload(submission._id, submission.attachmentPath.split("-").slice(2).join("-"))}>{submission.attachmentPath.split("-").slice(2).join("-")}</button>
                                     </div>
                                     <div className="card-score">
                                         Status: Submitted
