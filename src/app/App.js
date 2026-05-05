@@ -12,6 +12,7 @@ import TestSubmissions from '../pages/TestSubmissions';
 import { useState } from 'react';
 import { ColorModeProvider } from '../context/ThemeContext';
 import { CssBaseline } from '@mui/material';
+import NotFound from '../pages/NotFound';
 
 //document.documentElement.setAttribute("data-theme", "dark");
 
@@ -31,7 +32,7 @@ function App() {
                 <Route path="/modules/tests/:id" element={<Test />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/" element={<Landing />} />
-                {/* <Route path="*" element={<NotFound />} /> */}
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </ColorModeProvider>
     );
