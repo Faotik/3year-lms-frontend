@@ -428,8 +428,8 @@ export default function Module() {
                     )}
 
                     {isCreateOpen && (
-                        <div className="modal-overlay" onClick={handleCloseCreate}>
-                            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="popup-overlay" onClick={handleCloseCreate}>
+                            <div className="popup-content" onClick={(e) => e.stopPropagation()}>
                                 <h2>Create New Assignment</h2>
                                 <form onSubmit={handleCreateSubmit} className="edit-form">
                                     <div className="edit-form-input">
@@ -457,7 +457,7 @@ export default function Module() {
                                             required
                                         />
                                     </div>
-                                    <div className="modal-buttons">
+                                    <div className="popup-buttons">
                                         <button type="button" onClick={handleCloseCreate} className="button">Cancel</button>
                                         <button type="submit" className="button-submition">Create</button>
                                     </div>
@@ -467,10 +467,10 @@ export default function Module() {
                     )}
 
                     {isCreateTestOpen && (
-                        <div className="modal-overlay" onClick={handleCloseCreateTest}>
-                            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 1000, overflowY: 'auto', maxHeight: '90vh' }}>
+                        <div className="popup-overlay" onClick={handleCloseCreateTest}>
+                            <div className="popup-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 1000, overflowY: 'auto', maxHeight: '90vh' }}>
                                 <TestCreationForm onCreate={handleCreateTestSubmit} defaultModuleId={id} />
-                                <div className="modal-buttons" style={{ marginTop: 15 }}>
+                                <div className="popup-buttons" style={{ marginTop: 15 }}>
                                     <button type="button" onClick={handleCloseCreateTest} className="button">
                                         Close
                                     </button>
@@ -480,10 +480,10 @@ export default function Module() {
                     )}
 
                     {isEditTestOpen && (
-                        <div className="modal-overlay" onClick={handleCloseEditTest}>
-                            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 1000, overflowY: 'auto', maxHeight: '90vh' }}>
+                        <div className="popup-overlay" onClick={handleCloseEditTest}>
+                            <div className="popup-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 1000, overflowY: 'auto', maxHeight: '90vh' }}>
                                 <TestEditForm tests={tests.map(t => ({ ...t, id: t._id }))} onUpdate={handleEditTestSubmit} defaultModuleId={id} initialSelectedId={selectedTestIdForForm} />
-                                <div className="modal-buttons" style={{ marginTop: 15 }}>
+                                <div className="popup-buttons" style={{ marginTop: 15 }}>
                                     <button type="button" onClick={handleCloseEditTest} className="button">
                                         Close
                                     </button>
@@ -493,10 +493,10 @@ export default function Module() {
                     )}
 
                     {isDeleteTestOpen && (
-                        <div className="modal-overlay" onClick={handleCloseDeleteTest}>
-                            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 1000, overflowY: 'auto', maxHeight: '90vh' }}>
+                        <div className="popup-overlay" onClick={handleCloseDeleteTest}>
+                            <div className="popup-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 1000, overflowY: 'auto', maxHeight: '90vh' }}>
                                 <TestDeleteForm tests={tests.map(t => ({ ...t, id: t._id }))} onConfirm={handleDeleteTestConfirm} initialSelectedId={selectedTestIdForForm} />
-                                <div className="modal-buttons" style={{ marginTop: 15 }}>
+                                <div className="popup-buttons" style={{ marginTop: 15 }}>
                                     <button type="button" onClick={handleCloseDeleteTest} className="button">
                                         Close
                                     </button>
