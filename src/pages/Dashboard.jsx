@@ -30,8 +30,17 @@ export default function Dashboard() {
                 ]);
 
                 if (userRes.ok) setUser(await userRes.json());
+                else if (userRes.status === 401) {
+                    navigate("/login");
+                }
                 if (modulesRes.ok) setModules(await modulesRes.json());
+                else if (modulesRes.status === 401) {
+                    navigate("/login");
+                }
                 if (upcomingRes.ok) setUpcoming(await upcomingRes.json());
+                else if (upcomingRes.status === 401) {
+                    navigate("/login");
+                }
             } catch (err) {
                 console.error(err);
                 setError("Failed to load page. Please refresh.");

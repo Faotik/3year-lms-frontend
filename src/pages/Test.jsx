@@ -21,6 +21,9 @@ export default function Test() {
         const func = async () => {
             const res = await getTest(id);
             if (res.ok) setTest(await res.json());
+            else if (res.status == 401) {
+                navigate("/login");
+            }
         };
         func();
     }, []);

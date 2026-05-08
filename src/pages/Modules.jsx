@@ -42,6 +42,9 @@ export default function Modules() {
                     data = data.filter((user) => user.role !== "admin");
                     setUsers(data);
                 }
+                else if (response.status == 401) {
+                    navigate("/login");
+                }
             }
         };
         func();
@@ -55,6 +58,9 @@ export default function Modules() {
         if (response.ok) {
             const data = await response.json();
             setModules(data);
+        }
+        else if (response.status == 401) {
+            navigate("/login");
         }
         else {
             setError("Unable to connect to the server. Please try again later.");

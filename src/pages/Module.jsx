@@ -69,6 +69,9 @@ export default function Module() {
                         const dataSubmission = await responseSubmission.json();
                         data[i] = { ...data[i], submission: dataSubmission };
                     }
+                    else if (responseSubmission.status == 401) {
+                        navigate("/login");
+                    }
                 }
 
             }
@@ -76,6 +79,9 @@ export default function Module() {
             data.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
 
             setAssignments(data);
+        }
+        else if (response.status == 401) {
+            navigate("/login");
         }
         else {
             setError("Unable to connect to the server. Please try again later.");
@@ -94,12 +100,18 @@ export default function Module() {
                         const dataSubmission = await responseSubmission.json();
                         data[i] = { ...data[i], submissions: dataSubmission };
                     }
+                    else if (responseSubmission.status == 401) {
+                        navigate("/login");
+                    }
                 }
 
             }
 
             data.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
             setTests(data);
+        }
+        else if (response.status == 401) {
+            navigate("/login");
         }
     };
 

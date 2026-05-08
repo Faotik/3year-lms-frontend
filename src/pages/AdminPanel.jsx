@@ -46,6 +46,9 @@ function AdminPanel() {
                 const data = await response.json();
                 setUsers(data);
             }
+            else if (response.status == 401) {
+                navigate("/login");
+            }
         } catch (error) {
             console.error("Failed to fetch users:", error);
         }
@@ -57,6 +60,9 @@ function AdminPanel() {
             if (response.ok) {
                 const data = await response.json();
                 setModules(data);
+            }
+            else if (response.status == 401) {
+                navigate("/login");
             }
         } catch (error) {
             console.error("Failed to fetch modules:", error);
@@ -74,10 +80,16 @@ function AdminPanel() {
                 const statsData = await statsRes.json();
                 setPlatformStats(statsData);
             }
+            else if (statsRes.status == 401) {
+                navigate("/login");
+            }
 
             if (graphRes.ok) {
                 const graphData = await graphRes.json();
                 setGraphStats(graphData);
+            }
+            else if (statsRes.status == 401) {
+                navigate("/login");
             }
         } catch (error) {
             console.error("Failed to fetch stats:", error);
@@ -189,11 +201,19 @@ function AdminPanel() {
                                 }
                             }
                         }
+                        else if (response.status == 401) {
+                            navigate("/login");
+                        }
                     }
+                }
+                else if (usersRes.status == 401) {
+                    navigate("/login");
                 }
 
                 await Promise.all([fetchUsers(), fetchModules()]);
                 setActivePage("dashboard");
+            } else if (response.status == 401) {
+                navigate("/login");
             } else {
                 console.error("Registration failed");
             }
@@ -339,11 +359,11 @@ function AdminPanel() {
             return <UserRegistrationForm onRegister={handleRegisterUser} modules={modules} />;
         } else if (activePage === "manage") {
             return (
-                <UserManagement 
-                    users={enrichedUsers} 
+                <UserManagement
+                    users={enrichedUsers}
                     modules={modules}
-                    onUserUpdated={handleUserUpdated} 
-                    onUserDeleted={handleUserDeleted} 
+                    onUserUpdated={handleUserUpdated}
+                    onUserDeleted={handleUserDeleted}
                 />
             );
         }

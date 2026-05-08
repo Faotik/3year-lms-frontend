@@ -27,6 +27,9 @@ export default function Submissions() {
             const data = await response.json();
             setsubmissions(data);
         }
+        else if (response.status == 401) {
+            navigate("/login");
+        }
     };
 
     const formatDate = (dateString) => {

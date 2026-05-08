@@ -32,9 +32,14 @@ export default function Login() {
                     localStorage.setItem("user", JSON.stringify(data));
                     navigate("/dashboard");
                 }
+                else if (userResponse.status == 401) {
+                    navigate("/login");
+                }
                 else {
                     setErrorPassword("Unable to connect to the server. Please try again later.");
                 }
+            } else if (loginResponse.status == 401) {
+                navigate("/login");
             } else {
                 setErrorPassword("Incorrect login credentials.");
             }
